@@ -1,0 +1,15 @@
+{
+  "C_Cpp.intelliSenseEngine": "default",
+  "idf.adapterTargetName": "esp32s3",
+  "idf.openOcdConfigs": [
+    "board/esp32s3-builtin.cfg"
+  ],
+  "idf.portWin": "COM4",
+  "idf.flashType": "JTAG",
+  "files.associations": {
+    "gpio.h": "c",
+    "clk_tree_defs.h": "c",
+    "adc_continuous.h": "c",
+    "adc_cali_scheme.h": "c"
+  }
+}
