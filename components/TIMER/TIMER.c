@@ -28,14 +28,13 @@ adc_oneshot_unit_handle_t adc_handle;
 
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
-    bool adc_flag;
-    adc1_read(adc_handle, cali_handle, adc_data.cd4051bmt_channel);
+    adc1_read(adc_handle, cali_handle, cd4051bmt_channel);
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
     //ESP_LOGI("timer", "timer alarm on, cd4051bmt_channel: %d", cd4051bmt_channel);
-    adc_data.cd4051bmt_channel = (adc_data.cd4051bmt_channel + 1) % 8;
-    cd4051bmt_channel_set(adc_data.cd4051bmt_channel);
+    cd4051bmt_channel = (cd4051bmt_channel + 1) % 8;
+    cd4051bmt_channel_set(cd4051bmt_channel);
     gptimer_set_raw_count(handle, 0);
     return true;
 }

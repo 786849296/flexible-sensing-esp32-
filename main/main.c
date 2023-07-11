@@ -26,13 +26,13 @@ void app_main(void)
     // ESP_LOGI("freq", "adc_apb: %"PRIu32, freq_adc);
     // ESP_ERROR_CHECK(esp_clk_tree_src_get_freq_hz(ADC_DIGI_CLK_SRC_PLL_F240M, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &freq_adc));
     // ESP_LOGI("freq", "adc_pll_f240m: %"PRIu32, freq_adc);
-    adc_data.cd4051bmt_channel = 0;
+    cd4051bmt_channel = 0;
     ESP_ERROR_CHECK(gptimer_start(timer_handle));
     while(1)
     {
-        for (int i = 0; i < 9; i++)
+        for (int i = 0; i < 16; i++)
         {
-            ESP_LOGI("main", "cd4051bmt_channel: %d, Cali Voltage: %d mV", i + 1, oneshot_data[i]);
+            ESP_LOGI("main", "cd4051bmt_channel: %d, Cali Voltage: %d mV", i, oneshot_data[i]);
         }
         
         // for (int i = 0; i < 2; i++)

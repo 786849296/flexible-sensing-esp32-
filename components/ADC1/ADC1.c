@@ -1,13 +1,13 @@
 #include "ADC1.h"
 
+#ifdef ADC_MODE_CONTINUOUS
+
 #define _ADC_UNIT_STR(unit) #unit
 #define ADC_UNIT_STR(unit) _ADC_UNIT_STR(unit)
 #define ADC_GET_CHANNEL(p) ((p)->type2.channel)
 #define ADC_GET_DATA(p) ((p)->type2.data)
 
 Adc_data adc_data = {0};
-
-#ifdef ADC_MODE_CONTINUOUS
 
 adc_continuous_handle_t adc1_init()
 {
@@ -71,7 +71,7 @@ Adc_data get_voltage(adc_cali_handle_t handle)
 
 #else
 //前8位为压阻，第九位为压电（脉搏）
-int oneshot_data[9] = {0};
+int oneshot_data[16] = {0};
 
 adc_oneshot_unit_handle_t adc1_init()
 {
@@ -96,10 +96,10 @@ void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali_hand
     if (ret == ESP_ERR_TIMEOUT)
         ESP_LOGI("ADC", "channel[3] time out");
     ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali_handle, oneshot_data[cd4051_chan], &oneshot_data[cd4051_chan]));
-    ret = adc_oneshot_read(adc_handle, ADC_CHANNEL_3, &oneshot_data[8]);
+    ret = adc_oneshot_read(adc_handle, ADC_CHANNEL_3, &oneshot_data[cd4051_chan + 8]);
     if (ret == ESP_ERR_TIMEOUT)
         ESP_LOGI("ADC", "channel[4] time out");
-    ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali_handle, oneshot_data[8], &oneshot_data[8]));
+    ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali_handle, oneshot_data[cd4051_chan + 8], &oneshot_data[cd4051_chan + 8]));
     //ESP_ERROR_CHECK(adc_continuous_stop(handle));
     return;
 }
