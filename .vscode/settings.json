@@ -11,6 +11,7 @@
     "clk_tree_defs.h": "c",
     "adc_continuous.h": "c",
     "adc_cali_scheme.h": "c",
-    "adc_cali.h": "c"
+    "adc_cali.h": "c",
+    "esp_log.h": "c"
   }
 }

@@ -1,5 +1,6 @@
 #include "TIMER.h"
 
+bool flag_collect = false;
 adc_cali_handle_t cali_handle;
 
 #ifdef ADC_MODE_CONTINUOUS
@@ -35,6 +36,8 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
     //ESP_LOGI("timer", "timer alarm on, cd4051bmt_channel: %d", cd4051bmt_channel);
     cd4051bmt_channel = (cd4051bmt_channel + 1) % 8;
     cd4051bmt_channel_set(cd4051bmt_channel);
+    if (!cd4051bmt_channel)
+        flag_collect = true;    
     gptimer_set_raw_count(handle, 0);
     return true;
 }

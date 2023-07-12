@@ -1,49 +1,65 @@
+//#define APP_TRACE
+
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 #include "CD4051BMT.h"
 #include "ADC1.h"
 #include "TIMER.h"
-//#include "UART.h"
+// #include "UART.h"
 // #include "soc/clk_tree_defs.h"
 // #include "esp_clk_tree.h"
-#include "esp_app_trace.h"
 #include "esp_log.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+//#include "esp_task_wdt.h"
+
+#ifdef APP_TRACE
+#include "esp_app_trace.h"
+#endif
 
 void app_main(void)
 {
     cd4051bmt_init();
     gptimer_handle_t timer_handle = gptimer_init();
-
     //uart_init();
 
-    // uint32_t freq_cpu, freq_apb, freq_pll_d2, freq_adc;
-    // ESP_ERROR_CHECK(esp_clk_tree_src_get_freq_hz(SOC_MOD_CLK_CPU, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &freq_cpu));
-    // ESP_ERROR_CHECK(esp_clk_tree_src_get_freq_hz(SOC_MOD_CLK_APB, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &freq_apb));
-    // ESP_ERROR_CHECK(esp_clk_tree_src_get_freq_hz(SOC_MOD_CLK_PLL_D2, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &freq_pll_d2));
-    // ESP_LOGI("freq", "cpu: %"PRIu32", apb: %"PRIu32", pll_div2: %"PRIu32, freq_cpu, freq_apb, freq_pll_d2);
-    // ESP_ERROR_CHECK(esp_clk_tree_src_get_freq_hz(ADC_DIGI_CLK_SRC_APB, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &freq_adc));
-    // ESP_LOGI("freq", "adc_apb: %"PRIu32, freq_adc);
-    // ESP_ERROR_CHECK(esp_clk_tree_src_get_freq_hz(ADC_DIGI_CLK_SRC_PLL_F240M, ESP_CLK_TREE_SRC_FREQ_PRECISION_CACHED, &freq_adc));
-    // ESP_LOGI("freq", "adc_pll_f240m: %"PRIu32, freq_adc);
     cd4051bmt_channel = 0;
     ESP_ERROR_CHECK(gptimer_start(timer_handle));
+    //等待采集一轮数据，100ms
+    esp_rom_delay_us(100 * 1000);
+
     while(1)
     {
+#ifdef APP_TRACE
+        char buf[10] = {0};
+        esp_err_t error;
+        while (!esp_apptrace_host_is_connected(ESP_APPTRACE_DEST_JTAG));
         for (int i = 0; i < 16; i++)
         {
-            ESP_LOGI("main", "cd4051bmt_channel: %d, Cali Voltage: %d mV", i, oneshot_data[i]);
+
+            int temp = oneshot_data[i];
+            ESP_LOGI("main", "cd4051bmt_channel: %d, Cali Voltage: %d mV", i, temp);
+            snprintf(buf, sizeof(buf), "%d ", temp);
+            error = esp_apptrace_write(ESP_APPTRACE_DEST_JTAG, buf, strlen(buf), ESP_APPTRACE_TMO_INFINITE);
+            esp_apptrace_flush(ESP_APPTRACE_DEST_JTAG, 100);
         }
-        
-        // for (int i = 0; i < 2; i++)
-        // {
-        //     esp_err_t error;
-        //     char* str = "0";
-        //     itoa(adc_data.channel[i], str, 10);
-        //     error = esp_apptrace_write(ESP_APPTRACE_DEST_TRAX, str, strlen(str), ESP_APPTRACE_TMO_INFINITE);
-        //     ESP_ERROR_CHECK(error);
-        //     itoa(adc_data.voltage[i], str, 10);
-        //     ESP_ERROR_CHECK(esp_apptrace_write(ESP_APPTRACE_DEST_TRAX, str, strlen(str), ESP_APPTRACE_TMO_INFINITE));
-        // }
+        error = esp_apptrace_write(ESP_APPTRACE_DEST_JTAG, "\n", sizeof(char), ESP_APPTRACE_TMO_INFINITE);
+        esp_apptrace_flush(ESP_APPTRACE_DEST_JTAG, 100);
+
+#else
+
+        if (flag_collect)
+        {
+            ESP_ERROR_CHECK(gptimer_stop(timer_handle));
+            for (int i = 0; i < 16; i++)
+                printf("%d ", oneshot_data[i]);
+            printf("\n");
+            flag_collect = false;
+            ESP_ERROR_CHECK(gptimer_start(timer_handle));
+        }
+        vTaskDelay(1);
+
+#endif    
     }
+
 }

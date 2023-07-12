@@ -1,3 +1,4 @@
+//log使用的也是UART0，被占用，该组件暂时弃用
 #pragma once
 
 #include "driver/uart.h"
