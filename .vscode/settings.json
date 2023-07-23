@@ -4,7 +4,7 @@
   "idf.openOcdConfigs": [
     "board/esp32s3-builtin.cfg"
   ],
-  "idf.portWin": "COM4",
+  "idf.portWin": "COM6",
   "idf.flashType": "JTAG",
   "files.associations": {
     "gpio.h": "c",
@@ -12,6 +12,10 @@
     "adc_continuous.h": "c",
     "adc_cali_scheme.h": "c",
     "adc_cali.h": "c",
-    "esp_log.h": "c"
+    "esp_log.h": "c",
+    "adc1.h": "c",
+    "adc_cali_schemes.h": "c",
+    "adc_oneshot.h": "c",
+    "adc_types.h": "c"
   }
 }

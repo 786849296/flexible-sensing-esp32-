@@ -23,7 +23,7 @@ void app_main(void)
     gptimer_handle_t timer_handle = gptimer_init();
     //uart_init();
 
-    cd4051bmt_channel = 0;
+    bool led = 0;
     ESP_ERROR_CHECK(gptimer_start(timer_handle));
     //等待采集一轮数据，100ms
     esp_rom_delay_us(100 * 1000);
@@ -37,7 +37,7 @@ void app_main(void)
         for (int i = 0; i < 16; i++)
         {
 
-            int temp = oneshot_data[i];
+            int temp = adc_data[i];
             ESP_LOGI("main", "cd4051bmt_channel: %d, Cali Voltage: %d mV", i, temp);
             snprintf(buf, sizeof(buf), "%d ", temp);
             error = esp_apptrace_write(ESP_APPTRACE_DEST_JTAG, buf, strlen(buf), ESP_APPTRACE_TMO_INFINITE);
@@ -45,21 +45,26 @@ void app_main(void)
         }
         error = esp_apptrace_write(ESP_APPTRACE_DEST_JTAG, "\n", sizeof(char), ESP_APPTRACE_TMO_INFINITE);
         esp_apptrace_flush(ESP_APPTRACE_DEST_JTAG, 100);
+#endif
 
-#else
-
+        int temp[16];
         if (flag_collect)
         {
-            ESP_ERROR_CHECK(gptimer_stop(timer_handle));
+            //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
+            memcpy(temp, adc_data, sizeof(adc_data));
             for (int i = 0; i < 16; i++)
-                printf("%d ", oneshot_data[i]);
+                printf("%d ", temp[i]);
             printf("\n");
             flag_collect = false;
-            ESP_ERROR_CHECK(gptimer_start(timer_handle));
+            //ESP_ERROR_CHECK(gptimer_start(timer_handle));
+            led = !led;
+            gpio_set_level(GPIO_NUM_45, led);
         }
+        //printf(" ");
+        //printf("cd4051bmt_channel: %d\n", cd4051bmt_channel);
         vTaskDelay(1);
 
-#endif    
+   
     }
 
 }

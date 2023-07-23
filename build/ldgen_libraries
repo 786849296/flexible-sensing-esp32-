@@ -4,6 +4,7 @@ C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/efuse/libefuse.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/driver/libdriver.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_pm/libesp_pm.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mbedtls/libmbedtls.a
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/libesp_bootloader_format.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_app_format/libesp_app_format.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/bootloader_support/libbootloader_support.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_partition/libesp_partition.a
@@ -56,6 +57,7 @@ C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/sdmmc/libsdmmc.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/fatfs/libfatfs.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/json/libjson.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mqtt/libmqtt.a
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/libnvs_sec_provider.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/perfmon/libperfmon.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/spiffs/libspiffs.a
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/touch_element/libtouch_element.a

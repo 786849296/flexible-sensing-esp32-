@@ -1,8 +1,7 @@
 #pragma once
 
-//ADC_MODE_CONTINUOUS有bug，序号对不上，且有电压采集有时有误
-//define ADC_MODE_CONTINUOUS
-#define ADC_MODE_ONESHOT
+#define ADC_MODE_CONTINUOUS
+//#define ADC_MODE_ONESHOT
 
 #ifdef ADC_MODE_CONTINUOUS
     #include "esp_adc/adc_continuous.h"
@@ -13,7 +12,9 @@
 #include "esp_adc/adc_cali_scheme.h"
 #include "esp_log.h"
 
-adc_cali_handle_t adc_cail_init();
+extern int adc_data[16];
+
+adc_cali_handle_t adc_cali_init();
 #ifdef ADC_MODE_CONTINUOUS
 
     #define READ_NUM 2
@@ -21,18 +22,17 @@ adc_cali_handle_t adc_cail_init();
 
     static uint8_t result[READ_LEN] = { 0 };
 
-    typedef struct Adc_data {
-    uint8_t cd4051bmt_channel;
-    uint32_t channel[READ_NUM];
-    uint32_t voltage[READ_NUM];
-    }Adc_data;
-    extern Adc_data adc_data;
+    // typedef struct Adc_data {
+    // uint8_t cd4051bmt_channel;
+    // uint32_t channel[READ_NUM];
+    // uint32_t voltage[READ_NUM];
+    // }Adc_data;
+    // extern Adc_data adc_data;
 
     adc_continuous_handle_t adc1_init();
     bool adc1_read(adc_continuous_handle_t handle);
-    Adc_data get_voltage(adc_cali_handle_t handle);
+    void get_voltage(adc_cali_handle_t handle, uint8_t channel);
 #else
-    extern int oneshot_data[16];
     adc_oneshot_unit_handle_t adc1_init();
-    void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali_handle, int cd4051_chan);
+    void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali3_handle, adc_cali_handle_t cali4_handle, int cd4051_chan);
 #endif

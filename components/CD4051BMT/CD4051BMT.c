@@ -2,7 +2,6 @@
 
 uint8_t cd4051bmt_channel = 0;
 static char *TAG = "CD4051BMT";
-static bool led = 0;
 
 void cd4051bmt_init()
 {
@@ -28,6 +27,4 @@ void cd4051bmt_channel_set(uint8_t channel)
         channel >>= 1;
         //ESP_LOGI(TAG, "gpio_pin is %d, it level is %d", gpio_pin[i], gpio_get_level(gpio_pin[i]));
     }
-    led = !led;
-    gpio_set_level(GPIO_NUM_45, led);
 }

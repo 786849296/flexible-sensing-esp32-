@@ -69,6 +69,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_app_format/cmake_install.cmake")
 endif()
 
@@ -370,6 +375,11 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
   include("C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mqtt/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)

@@ -7,14 +7,17 @@
 #define ADC_GET_CHANNEL(p) ((p)->type2.channel)
 #define ADC_GET_DATA(p) ((p)->type2.data)
 
-Adc_data adc_data = {0};
+//前8位为压阻，后8位为压电（脉搏）
+int adc_data[16] = {0};
+// Adc_data adc_data = {0};
 
 adc_continuous_handle_t adc1_init()
 {
     adc_continuous_handle_t handle = NULL;
     adc_continuous_handle_cfg_t adc_config = {
-        .max_store_buf_size = 1024,
-        .conv_frame_size = READ_LEN
+        .max_store_buf_size = READ_LEN * 2,
+        .conv_frame_size = READ_LEN,
+        .flags.flush_pool = true
     };
     ESP_ERROR_CHECK(adc_continuous_new_handle(&adc_config, &handle));
     adc_continuous_config_t dig_cfg = {
@@ -53,31 +56,30 @@ bool adc1_read(adc_continuous_handle_t handle)
     return flag_result;
 }
 
-Adc_data get_voltage(adc_cali_handle_t handle)
+void get_voltage(adc_cali_handle_t handle, uint8_t channel)
 {
-    Adc_data v = {0};
     uint32_t data;
     for (int i = 0; i < READ_LEN; i += SOC_ADC_DIGI_RESULT_BYTES)
     {
         adc_digi_output_data_t *p = (adc_digi_output_data_t*)&result[i];
         uint32_t chan_num = ADC_GET_CHANNEL(p);
         data = ADC_GET_DATA(p);
-        adc_data.channel[i / SOC_ADC_DIGI_RESULT_BYTES] = chan_num;
-        ESP_ERROR_CHECK(adc_cali_raw_to_voltage(handle, data, &adc_data.voltage[i / SOC_ADC_DIGI_RESULT_BYTES]));
+        if (chan_num == 3)
+            ESP_ERROR_CHECK(adc_cali_raw_to_voltage(handle, data, &adc_data[channel + 8]));
+        else
+            ESP_ERROR_CHECK(adc_cali_raw_to_voltage(handle, data, &adc_data[channel]));
         //ESP_LOGI("cail", "ADC%d Channel[%"PRIu32"] Cali Voltage: %"PRIu32" mV", ADC_UNIT_1 + 1, chan_num, v.voltage[i / SOC_ADC_DIGI_RESULT_BYTES]);
     }
-    return v;
 }
 
 #else
-//前8位为压阻，第九位为压电（脉搏）
-int oneshot_data[16] = {0};
 
 adc_oneshot_unit_handle_t adc1_init()
 {
     adc_oneshot_unit_handle_t handle;
     adc_oneshot_unit_init_cfg_t adc_init_cfg = {
-        .unit_id = ADC_UNIT_1
+        .unit_id = ADC_UNIT_1,
+        .ulp_mode = ADC_ULP_MODE_DISABLE
     };
     ESP_ERROR_CHECK(adc_oneshot_new_unit(&adc_init_cfg, &handle));
     adc_oneshot_chan_cfg_t adc_chan_cfg = {
@@ -89,24 +91,18 @@ adc_oneshot_unit_handle_t adc1_init()
     return handle;
 }
 
-void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali_handle, int cd4051_chan)
+void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali3_handle, adc_cali_handle_t cali4_handle, int cd4051_chan)
 {
-    esp_err_t ret;
-    ret = adc_oneshot_read(adc_handle, ADC_CHANNEL_4, &oneshot_data[cd4051_chan]);
-    if (ret == ESP_ERR_TIMEOUT)
-        ESP_LOGI("ADC", "channel[3] time out");
-    ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali_handle, oneshot_data[cd4051_chan], &oneshot_data[cd4051_chan]));
-    ret = adc_oneshot_read(adc_handle, ADC_CHANNEL_3, &oneshot_data[cd4051_chan + 8]);
-    if (ret == ESP_ERR_TIMEOUT)
-        ESP_LOGI("ADC", "channel[4] time out");
-    ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali_handle, oneshot_data[cd4051_chan + 8], &oneshot_data[cd4051_chan + 8]));
-    //ESP_ERROR_CHECK(adc_continuous_stop(handle));
+    ESP_ERROR_CHECK(adc_oneshot_read(adc_handle, ADC_CHANNEL_3, &adc_data[cd4051_chan + 8]));
+    ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali3_handle, adc_data[cd4051_chan + 8], &adc_data[cd4051_chan + 8]));
+    ESP_ERROR_CHECK(adc_oneshot_read(adc_handle, ADC_CHANNEL_4, &adc_data[cd4051_chan]));
+    ESP_ERROR_CHECK(adc_cali_raw_to_voltage(cali4_handle, adc_data[cd4051_chan], &adc_data[cd4051_chan]));
     return;
 }
 
 #endif
 
-adc_cali_handle_t adc_cail_init()
+adc_cali_handle_t adc_cali_init()
 {
     adc_cali_handle_t handle = NULL;
     adc_cali_curve_fitting_config_t cail_cfg = {

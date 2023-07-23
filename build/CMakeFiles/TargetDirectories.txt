@@ -109,6 +109,13 @@ C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mbedtls/mbedtls/library
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mbedtls/mbedtls/library/CMakeFiles/install.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mbedtls/mbedtls/library/CMakeFiles/install/local.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mbedtls/mbedtls/library/CMakeFiles/install/strip.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/__idf_esp_bootloader_format.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/edit_cache.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/rebuild_cache.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/list_install_components.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/install.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/install/local.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_bootloader_format/CMakeFiles/install/strip.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_app_format/CMakeFiles/__idf_esp_app_format.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_app_format/CMakeFiles/edit_cache.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/esp_app_format/CMakeFiles/rebuild_cache.dir
@@ -564,6 +571,13 @@ C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mqtt/CMakeFiles/list_in
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mqtt/CMakeFiles/install.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mqtt/CMakeFiles/install/local.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mqtt/CMakeFiles/install/strip.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/__idf_nvs_sec_provider.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/edit_cache.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/rebuild_cache.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/list_install_components.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/install.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/install/local.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/nvs_sec_provider/CMakeFiles/install/strip.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/openthread/CMakeFiles/edit_cache.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/openthread/CMakeFiles/rebuild_cache.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/openthread/CMakeFiles/list_install_components.dir
