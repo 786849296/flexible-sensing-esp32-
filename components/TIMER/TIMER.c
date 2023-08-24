@@ -1,10 +1,11 @@
 #include "TIMER.h"
 
+adc_cali_handle_t cali_handle;
+bool flag_collect = false;
+
 #ifdef ADC_MODE_CONTINUOUS
 
-bool flag_collect = false;
 adc_continuous_handle_t adc_handle;
-adc_cali_handle_t cali_handle;
 
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
@@ -16,7 +17,13 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
     if (adc_flag)
         get_voltage(cali_handle, channel);
     if (!cd4051bmt_channel)
-        flag_collect = true;
+    {
+        len++;
+        if (len >= 120)
+            flag_collect = true;
+        if (len == 150)
+            len = 0;
+    }
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
@@ -26,14 +33,12 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
 
 #else
 
-adc_cali_handle_t cali3_handle;
-adc_cali_handle_t cali4_handle;
 adc_oneshot_unit_handle_t adc_handle;
 
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
     esp_err_t ret;
-    adc1_read(adc_handle, cali3_handle, cali4_handle, cd4051bmt_channel);
+    adc1_read(adc_handle, cali_handle, cd4051bmt_channel);
     //ret = adc_oneshot_get_calibrated_result(adc_handle, cali3_handle, ADC_CHANNEL_3, &adc_data[cd4051bmt_channel + 8]);
     //ret = adc_oneshot_get_calibrated_result(adc_handle, cali4_handle, ADC_CHANNEL_4, &adc_data[cd4051bmt_channel]);
     cd4051bmt_channel = (cd4051bmt_channel + 1) % 8;
@@ -71,13 +76,12 @@ gptimer_handle_t gptimer_init()
     ESP_ERROR_CHECK(gptimer_enable(gptimer));
 
     adc_handle = adc1_init();
+    cali_handle = adc_cali_init();
 
 #ifdef ADC_MODE_CONTINUOUS
-    cali_handle = adc_cali_init();
+
     ESP_ERROR_CHECK(adc_continuous_start(adc_handle));
-#else
-    cali3_handle = adc_cali_init();
-    cali4_handle = adc_cali_init();
+
 #endif
 
     return gptimer;

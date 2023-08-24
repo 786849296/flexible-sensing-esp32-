@@ -668,3 +668,10 @@ C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/UART/CMakeFiles/list_in
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/UART/CMakeFiles/install.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/UART/CMakeFiles/install/local.dir
 C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/UART/CMakeFiles/install/strip.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/__idf_algorithm.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/edit_cache.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/rebuild_cache.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/list_install_components.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/install.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/install/local.dir
+C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/algorithm/CMakeFiles/install/strip.dir

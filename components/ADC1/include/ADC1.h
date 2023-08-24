@@ -12,7 +12,9 @@
 #include "esp_adc/adc_cali_scheme.h"
 #include "esp_log.h"
 
-extern int adc_data[16];
+extern float raw_ele[1200];
+extern int raw_res[150][6];
+extern int len;
 
 adc_cali_handle_t adc_cali_init();
 #ifdef ADC_MODE_CONTINUOUS
@@ -34,5 +36,5 @@ adc_cali_handle_t adc_cali_init();
     void get_voltage(adc_cali_handle_t handle, uint8_t channel);
 #else
     adc_oneshot_unit_handle_t adc1_init();
-    void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali3_handle, adc_cali_handle_t cali4_handle, int cd4051_chan);
+    void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali_handle, int cd4051_chan);
 #endif

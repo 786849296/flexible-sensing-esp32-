@@ -70,3 +70,4 @@ $<TARGET_FILE:__idf_ADC1>
 $<TARGET_FILE:__idf_CD4051BMT>
 $<TARGET_FILE:__idf_TIMER>
 $<TARGET_FILE:__idf_UART>
+$<TARGET_FILE:__idf_algorithm>
