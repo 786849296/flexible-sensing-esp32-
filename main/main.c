@@ -23,6 +23,10 @@ const int peak_distance_bcg = 59;
 const int peak_distance_breath = 200;
 const float peak_height_breath = 1.2;
 
+int now_rate_bcg = 0;
+int now_rate_breath = 0;
+bool round_one_flag = true;
+
 float signal_bcg[1200];
 float signal_breath[1200];
 
@@ -70,10 +74,13 @@ void app_main(void)
                 if (is_bodyMove(raw_res[i], raw_res[i + 1], 6))
                 {
                     state = 2;
+                    round_one_flag = true;
                     break;
                 }
                 else if (state != 1 && is_onBed(raw_res[i], 6))
                     state = 1;
+            if (state == 0 && round_one_flag == false)
+                round_one_flag = true;
             printf("state: %d\n", state);
         
             if (state == 1)
@@ -121,10 +128,19 @@ void app_main(void)
                 for (int i = 0; i < len_bcg; i++)
                 {
                     rate_bcg[i] = 180 / (peak_bcg[i] / FILTER_FS);
-                    printf("%d ", rate_bcg[i]);
+                    // printf("%d ", rate_bcg[i]);
                 }
-                printf("\n");
+                // printf("\n");
                 
+                if (round_one_flag)
+                    now_rate_bcg = rate_bcg[len_bcg - 1];
+
+                if (now_rate_bcg != rate_bcg[len_bcg - 1] && abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 15)
+                    now_rate_bcg = rate_bcg[len_bcg - 1];
+                
+                printf("%d \n", now_rate_bcg);
+                round_one_flag = false;
+
                 int peak_count_breath = 0;
                 int* peak_all_breath = fun_findAllPeaks(signal_breath, len_breath, &peak_count_breath);
                 int* peak_byheight_breath = fun_selectbyHeight(signal_breath, peak_all_breath, peak_count_breath, &peak_count_breath);
@@ -133,11 +149,18 @@ void app_main(void)
                 int *rate_breath = (int*)malloc(len_breath * sizeof(int));
                 for (int i = 0; i < len_breath; i++)
                 {
-                    rate_breath[i] = 60 / (peak_breath[i] / FILTER_N);
-                    printf("%d ", rate_breath[i]);
+                    rate_breath[i] = 60 / (peak_breath[i] / FILTER_FS);
+                    // printf("%d ", rate_breath[i]);
                 }
-                printf("\n");
+                // printf("\n");
+
+                // if (round_one_flag)
+                //     now_rate_breath = rate_breath[len_breath - 1];
+
+                now_rate_breath = rate_breath[len_breath - 1];
+                printf("%d \n", now_rate_breath);
             }
+            
             for (int i = 0; i < len - 5; i++)
                 for (int c = 0; c < 8; c++)
                 {
