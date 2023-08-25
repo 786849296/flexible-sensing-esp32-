@@ -1,4 +1,4 @@
-/* * Data converted from C:/Users/z7868/Desktop/project/esp32/blink/build/esp-idf/mbedtls/x509_crt_bundle
+/* * Data converted from D:/Desktop/flexible-sensing-esp32-/build/esp-idf/mbedtls/x509_crt_bundle
  */
 .data
 .section .rodata.embedded

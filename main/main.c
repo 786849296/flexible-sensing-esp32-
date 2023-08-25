@@ -66,7 +66,7 @@ void app_main(void)
         {
             printf("len: %d\n", len);
             int len_temp = len;
-            for (int i = len_temp - 5; i < len_temp - 1; i++)
+            for (int i = len_temp - 6; i < len_temp - 1; i++)
                 if (is_bodyMove(raw_res[i], raw_res[i + 1], 6))
                 {
                     state = 2;
