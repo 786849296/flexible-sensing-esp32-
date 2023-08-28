@@ -21,7 +21,7 @@
 
 const int peak_distance_bcg = 59;
 const int peak_distance_breath = 200;
-const float peak_height_breath = 1.2;
+const float peak_height_breath = 1.22;
 
 int now_rate_bcg = 0;
 int now_rate_breath = 0;
@@ -86,13 +86,13 @@ void app_main(void)
             switch (state)
             {
             case 0:
-                printf("状态：离床");
+                printf("状态: 离床 \n");
                 break;
             case 1:
-                printf("状态：在床");
+                printf("状态: 在床 \n");
                 break;
             case 2:
-                printf("状态：体动");
+                printf("状态: 体动 \n");
                 break;
             }
             
@@ -138,22 +138,33 @@ void app_main(void)
                 len_bcg = peak_diff(peak_bcg, peak_count_bcg);
                 len_bcg = peak3_zip(peak_bcg, len_bcg);
 
+                free(peak_all_bcg);
+                free(peak_byheight_bcg);
+
+
                 int *rate_bcg = (int*)malloc(len_bcg * sizeof(int));
                 for (int i = 0; i < len_bcg; i++)
                 {
                     rate_bcg[i] = 180 / (peak_bcg[i] / FILTER_FS);
-                    // printf("%d ", rate_bcg[i]);
+                    // printf("rate_bcg: %d ", rate_bcg[i]);
                 }
                 // printf("\n");
-                
-                if (round_one_flag)
-                    now_rate_bcg = rate_bcg[len_bcg - 1];
+                free(peak_bcg);
 
-                if (now_rate_bcg != rate_bcg[len_bcg - 1] && abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 15)
-                    now_rate_bcg = rate_bcg[len_bcg - 1];
+                if (len_bcg)
+                {
+                    if (round_one_flag)
+                        {
+                            now_rate_bcg = rate_bcg[len_bcg - 1];
+                            round_one_flag = false;
+                        }
+                    if (now_rate_bcg != rate_bcg[len_bcg - 1] && (abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 15))
+                        now_rate_bcg = rate_bcg[len_bcg - 1];
+                }
                 
-                printf("heart:%d \n", now_rate_bcg);
-                round_one_flag = false;
+                free(rate_bcg);
+                printf("heart: %d \n", now_rate_bcg);
+                
 
                 // 呼吸率
                 int peak_count_breath = 0;
@@ -161,19 +172,33 @@ void app_main(void)
                 int* peak_byheight_breath = fun_selectbyHeight(signal_breath, peak_all_breath, peak_count_breath, &peak_count_breath);
                 int* peak_breath = fun_selectbyDistance(signal_breath, peak_byheight_breath, peak_count_breath, peak_distance_breath, &peak_count_breath);
                 len_breath = peak_diff(peak_breath, peak_count_breath);
-                int *rate_breath = (int*)malloc(len_breath * sizeof(int));
-                for (int i = 0; i < len_breath; i++)
+                
+                free(peak_all_breath);
+                free(peak_byheight_breath);
+                
+                if (len_breath)
                 {
-                    rate_breath[i] = 60 / (peak_breath[i] / FILTER_FS);
-                    // printf("%d ", rate_breath[i]);
+                    int *rate_breath = (int*)malloc(len_breath * sizeof(int));
+                    for (int i = 0; i < len_breath; i++)
+                    {
+                        rate_breath[i] = 60 / (peak_breath[i] / FILTER_FS);
+                        // printf("rate_breath: %d ", rate_breath[i]);
+                    }
+                    // printf("\n");
+
+                    // if (round_one_flag)
+                    //     now_rate_breath = rate_breath[len_breath - 1];
+
+                    if (now_rate_breath != rate_breath[len_breath - 1])
+                        now_rate_breath = rate_breath[len_breath - 1];
+                    printf("breath: %d \n", now_rate_breath);
+                    
+                    free(rate_breath);
                 }
-                // printf("\n");
-
-                // if (round_one_flag)
-                //     now_rate_breath = rate_breath[len_breath - 1];
-
-                now_rate_breath = rate_breath[len_breath - 1];
-                printf("breath:%d \n", now_rate_breath);
+                else
+                    printf("breath: %d \n", 0);
+                
+                free(peak_breath);
             }
             
             for (int i = 0; i < len - 5; i++)
@@ -187,6 +212,7 @@ void app_main(void)
             flag_collect = false;
             led = !led;
             gpio_set_level(GPIO_NUM_45, led);
+            printf("\n");
         }
 
         // if (flag_collect)

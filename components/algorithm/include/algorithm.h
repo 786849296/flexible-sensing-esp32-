@@ -6,7 +6,7 @@
 #include "filter.h"
 
 #define FILTER_N 5
-#define FILTER_FS 100
+#define FILTER_FS 100.0
 #define FILTER_LOW_WC 0.4
 #define FILTER_BP_WC_LOW 1.1
 #define FILTER_BP_WC_HIGH 12.0
