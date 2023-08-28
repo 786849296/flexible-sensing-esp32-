@@ -81,8 +81,21 @@ void app_main(void)
                     state = 1;
             if (state == 0 && round_one_flag == false)
                 round_one_flag = true;
-            printf("state: %d\n", state);
-        
+            
+            // printf("state: %d\n", state);
+            switch (state)
+            {
+            case 0:
+                printf("状态：离床");
+                break;
+            case 1:
+                printf("状态：在床");
+                break;
+            case 2:
+                printf("状态：体动");
+                break;
+            }
+            
             if (state == 1)
             {
                 float max_bcg = 0, min_bcg = 5;
@@ -117,6 +130,7 @@ void app_main(void)
                     signal_bcg[x] = exp(signal_bcg[x]) - 1;
                 }
                 
+                // 心率
                 int peak_count_bcg = 0;
                 int* peak_all_bcg = fun_findAllPeaks(signal_bcg, len_bcg, &peak_count_bcg);
                 int* peak_byheight_bcg = fun_selectbyHeight(signal_bcg, peak_all_bcg, peak_count_bcg, &peak_count_bcg);
@@ -138,9 +152,10 @@ void app_main(void)
                 if (now_rate_bcg != rate_bcg[len_bcg - 1] && abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 15)
                     now_rate_bcg = rate_bcg[len_bcg - 1];
                 
-                printf("%d \n", now_rate_bcg);
+                printf("heart:%d \n", now_rate_bcg);
                 round_one_flag = false;
 
+                // 呼吸率
                 int peak_count_breath = 0;
                 int* peak_all_breath = fun_findAllPeaks(signal_breath, len_breath, &peak_count_breath);
                 int* peak_byheight_breath = fun_selectbyHeight(signal_breath, peak_all_breath, peak_count_breath, &peak_count_breath);
@@ -158,7 +173,7 @@ void app_main(void)
                 //     now_rate_breath = rate_breath[len_breath - 1];
 
                 now_rate_breath = rate_breath[len_breath - 1];
-                printf("%d \n", now_rate_breath);
+                printf("breath:%d \n", now_rate_breath);
             }
             
             for (int i = 0; i < len - 5; i++)
