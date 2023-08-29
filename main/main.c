@@ -21,11 +21,12 @@
 
 const int peak_distance_bcg = 59;
 const int peak_distance_breath = 200;
-const float peak_height_breath = 1.22;
+const float peak_height_breath = 1.3;
 
 int now_rate_bcg = 0;
 int now_rate_breath = 0;
 bool round_one_flag = true;
+int count_breath = 0;
 
 float signal_bcg[1200];
 float signal_breath[1200];
@@ -68,7 +69,7 @@ void app_main(void)
         int state = 0;
         if (flag_collect)
         {
-            printf("len: %d\n", len);
+            // printf("len: %d\n", len);
             int len_temp = len;
             for (int i = len_temp - 6; i < len_temp - 1; i++)
                 if (is_bodyMove(raw_res[i], raw_res[i + 1], 6))
@@ -151,7 +152,7 @@ void app_main(void)
                 // printf("\n");
                 free(peak_bcg);
 
-                if (len_bcg)
+                if (len_bcg > 0)
                 {
                     if (round_one_flag)
                         {
@@ -163,7 +164,7 @@ void app_main(void)
                 }
                 
                 free(rate_bcg);
-                printf("heart: %d \n", now_rate_bcg);
+                printf("心率: %d \n", now_rate_bcg);
                 
 
                 // 呼吸率
@@ -175,8 +176,8 @@ void app_main(void)
                 
                 free(peak_all_breath);
                 free(peak_byheight_breath);
-                
-                if (len_breath)
+                // printf("%d \n", len_breath);
+                if (len_breath > 0)
                 {
                     int *rate_breath = (int*)malloc(len_breath * sizeof(int));
                     for (int i = 0; i < len_breath; i++)
@@ -189,18 +190,30 @@ void app_main(void)
                     // if (round_one_flag)
                     //     now_rate_breath = rate_breath[len_breath - 1];
 
+                    // printf("%d\n", now_rate_breath);
+                    // printf("%d\n", rate_breath[len_breath - 1]);
+
                     if (now_rate_breath != rate_breath[len_breath - 1])
                         now_rate_breath = rate_breath[len_breath - 1];
-                    printf("breath: %d \n", now_rate_breath);
-                    
+                    printf("呼吸率: %d \n", now_rate_breath);
+                    count_breath = 0;
                     free(rate_breath);
                 }
                 else
-                    printf("breath: %d \n", 0);
-                
+                {
+                    //添加定时效果
+                    count_breath++;
+                    if (count_breath >= 20) // 单次循环为0.5秒,20次为10秒
+                    {
+                        now_rate_breath = 0;
+                        printf("呼吸率: %d \n", now_rate_breath);
+                    }
+                    else
+                        printf("呼吸率: %d \n", now_rate_breath);
+                }
                 free(peak_breath);
             }
-            
+            // printf("%d \n", count_breath);
             for (int i = 0; i < len - 5; i++)
                 for (int c = 0; c < 8; c++)
                 {
@@ -213,6 +226,7 @@ void app_main(void)
             led = !led;
             gpio_set_level(GPIO_NUM_45, led);
             printf("\n");
+            vTaskDelay(1);
         }
 
         // if (flag_collect)
@@ -231,7 +245,7 @@ void app_main(void)
         // }
         // // printf(" ");
         // // printf("cd4051bmt_channel: %d\n", cd4051bmt_channel);
-        vTaskDelay(1);
+        
 
     }
 }
