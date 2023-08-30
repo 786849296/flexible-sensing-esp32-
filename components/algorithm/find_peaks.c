@@ -1,7 +1,7 @@
 #include<stdio.h>
 #include<stdlib.h>
 
-// Êı×é·ÖÇø quicksortº¯Êıµ÷ÓÃ
+// æ•°ç»„åˆ†åŒº quicksortå‡½æ•°è°ƒç”¨
 int partition(float* arr, int* indices, int low, int high) {
     float pivot = arr[indices[high]];
     int i = (low - 1);
@@ -22,7 +22,7 @@ int partition(float* arr, int* indices, int low, int high) {
     return (i + 1);
 }
 
-// ¿ìËÙÅÅĞò argsortº¯Êıµ÷ÓÃ
+// å¿«é€Ÿæ’åº argsortå‡½æ•°è°ƒç”¨
 void quicksort(float* arr, int* indices, int low, int high) {
     if (low < high) {
         int pi = partition(arr, indices, low, high);
@@ -32,7 +32,7 @@ void quicksort(float* arr, int* indices, int low, int high) {
     }
 }
 
-// ½«arrÉıĞòÅÅÁĞºóµÄË÷Òı±£´æÔÚindicesÖĞ fun_selectbyDistanceº¯Êıµ÷ÓÃ
+// å°†arrå‡åºæ’åˆ—åçš„ç´¢å¼•ä¿å­˜åœ¨indicesä¸­ fun_selectbyDistanceå‡½æ•°è°ƒç”¨
 void argsort(float* arr, int* indices, int length) {
     for (int i = 0; i < length; i++) {
         indices[i] = i;
@@ -41,8 +41,8 @@ void argsort(float* arr, int* indices, int length) {
     quicksort(arr, indices, 0, length - 1);
 }
 
-// ¶¨Î»ËùÓĞ²¨·å
-// signal:ĞÅºÅÊı×é, length:ĞÅºÅÊı×é³¤¶È, peaks_count:ÓÃÓÚ±£´æ·åÖµ¸öÊı
+// å®šä½æ‰€æœ‰æ³¢å³°
+// signal:ä¿¡å·æ•°ç»„, length:ä¿¡å·æ•°ç»„é•¿åº¦, peaks_count:ç”¨äºä¿å­˜å³°å€¼ä¸ªæ•°
 // float signal[] = { };
 // int length = sizeof(signal) / sizeof(signal[0]);
 // int peaks_count = 0;
@@ -75,8 +75,8 @@ int* fun_findAllPeaks(float* signal, int length, int* peaks_count) {
 }
 
 
-// ¸ù¾İheightÉ¸Ñ¡·åÖµ
-// signal:ĞÅºÅÊı×é, peaks:·åÖµÊı×é, peaks_size:·åÖµ¸öÊı, peaks_count:ÓÃÓÚ±£´æ·åÖµ¸öÊı
+// æ ¹æ®heightç­›é€‰å³°å€¼
+// signal:ä¿¡å·æ•°ç»„, peaks:å³°å€¼æ•°ç»„, peaks_size:å³°å€¼ä¸ªæ•°, peaks_count:ç”¨äºä¿å­˜å³°å€¼ä¸ªæ•°
 // float signal[] = { };
 // int peaks[] = { };
 // int peaks_size = sizeof(peaks) / sizeof(peaks[0]);
@@ -92,7 +92,7 @@ int* fun_selectbyHeight(float* signal, int* peaks, int peaks_size, int* peaks_co
         }
     }
 
-    // ¼ÆËãpeaksheight
+    // è®¡ç®—peaksheight
     float peaksheight = num / peaks_size;
     // float peaksheight = (num - maxpeaks) / (*peaks_count - 1);
 
@@ -109,8 +109,8 @@ int* fun_selectbyHeight(float* signal, int* peaks, int peaks_size, int* peaks_co
 }
 
 
-// ¸ù¾İdistanceÉ¸Ñ¡·åÖµ
-// signal:ĞÅºÅÊı×é, peaks:·åÖµÊı×é, peaks_size:·åÖµ¸öÊı, distance:·åÖµ×îĞ¡¾àÀë, peaks_count:ÓÃÓÚ±£´æ·åÖµ¸öÊı
+// æ ¹æ®distanceç­›é€‰å³°å€¼
+// signal:ä¿¡å·æ•°ç»„, peaks:å³°å€¼æ•°ç»„, peaks_size:å³°å€¼ä¸ªæ•°, distance:å³°å€¼æœ€å°è·ç¦», peaks_count:ç”¨äºä¿å­˜å³°å€¼ä¸ªæ•°
 // float signal[] = { };
 // int peaks[] = { };
 // int peaks_size = sizeof(peaks) / sizeof(peaks[0]);
@@ -118,8 +118,8 @@ int* fun_selectbyHeight(float* signal, int* peaks, int peaks_size, int* peaks_co
 // int peaks_count = 0;
 // int* new_peaks = fun_selectbyDistance(signal, peaks, peaks_size, distance, &peaks_count);
 int* fun_selectbyDistance(float* signal, int* peaks, int peaks_size, int distance, int* peaks_count) {
-    int* new_peaks = (int*)malloc(peaks_size * sizeof(int)); // newpeaks·ÖÅä¿Õ¼ä
-    int* keep = (int*)malloc(peaks_size * sizeof(int)); // ·åÖµÌõ¼şÅĞ¶Ï²¼¶ûÊı×é
+    int* new_peaks = (int*)malloc(peaks_size * sizeof(int)); // newpeaksåˆ†é…ç©ºé—´
+    int* keep = (int*)malloc(peaks_size * sizeof(int)); // å³°å€¼æ¡ä»¶åˆ¤æ–­å¸ƒå°”æ•°ç»„
     for (int i = 0; i < peaks_size; i++) {
         keep[i] = 1;
     }
@@ -137,13 +137,13 @@ int* fun_selectbyDistance(float* signal, int* peaks, int peaks_size, int distanc
             if (keep[j] == 0) {
                 continue;
             }
-            // É¾³ı×ó²à²»Âú×ã·åÖµ
+            // åˆ é™¤å·¦ä¾§ä¸æ»¡è¶³å³°å€¼
             int k = j - 1;
             while (k >= 0 && peaks[j] - peaks[k] < distance) {
                 keep[k] = 0;
                 k--;
             }
-            // É¾³ıÓÒ²à²»Âú×ã·åÖµ
+            // åˆ é™¤å³ä¾§ä¸æ»¡è¶³å³°å€¼
             k = j + 1;
             while (k < peaks_size && peaks[k] - peaks[j] < distance) {
                 keep[k] = 0;

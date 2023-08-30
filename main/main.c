@@ -19,14 +19,14 @@
 #include "esp_app_trace.h"
 #endif
 
-const int peak_distance_bcg = 59;
-const int peak_distance_breath = 200;
-const float peak_height_breath = 1.3;
+const int peak_distance_bcg = 59; // 心率寻峰算法distance参数
+const int peak_distance_breath = 200; // 呼吸率寻峰算法distance参数
+const float peak_height_breath = 1.3; // 呼吸率寻峰算法height参数
 
-int now_rate_bcg = 0;
-int now_rate_breath = 0;
-bool round_one_flag = true;
-int count_breath = 0;
+int now_rate_bcg = 0; // 当前心率值，用于输出
+int now_rate_breath = 0; // 当心呼吸率值，用于输出
+bool round_one_flag = true; // 判断首次在床的标志
+int count_breath = 0; // 用于判断呼吸暂停的计数器
 
 float signal_bcg[1200];
 float signal_breath[1200];
@@ -71,6 +71,7 @@ void app_main(void)
         {
             // printf("len: %d\n", len);
             int len_temp = len;
+            // 判断状态
             for (int i = len_temp - 6; i < len_temp - 1; i++)
                 if (is_bodyMove(raw_res[i], raw_res[i + 1], 6))
                 {
@@ -100,6 +101,7 @@ void app_main(void)
             if (state == 1)
             {
                 float max_bcg = 0, min_bcg = 5;
+                // 双向滤波 分离心冲击信号与呼吸信号
                 for (int i = len_temp * 8; i > -1; i--)
                 {
                     signal_bcg[i] = bw_band_pass(filter_bd, raw_ele[i]);
@@ -122,16 +124,19 @@ void app_main(void)
                 memset(filter_low->w2, 0, sizeof(float) * filter_low->n);
                 int len_bcg = len_temp * 8;
                 int len_breath = len_temp * 8;
+                // bcg信号差分
                 len_bcg = cal_diff(signal_bcg, len_bcg);
-                int a = 2;
+                // bcg信号幅度缩放
+                int a = 2; // 缩放到(-2， 2)区间
                 float k = 2.0 * a / (max_bcg - min_bcg);
+                // 信号指数放大
                 for (int x = 0; x < len_bcg; x++)
                 {
                     signal_bcg[x] = k * (signal_bcg[x] - max_bcg) + a;
                     signal_bcg[x] = exp(signal_bcg[x]) - 1;
                 }
                 
-                // 心率
+                // 心率计算
                 int peak_count_bcg = 0;
                 int* peak_all_bcg = fun_findAllPeaks(signal_bcg, len_bcg, &peak_count_bcg);
                 int* peak_byheight_bcg = fun_selectbyHeight(signal_bcg, peak_all_bcg, peak_count_bcg, &peak_count_bcg);
@@ -154,11 +159,13 @@ void app_main(void)
 
                 if (len_bcg > 0)
                 {
+                    // 判断是否为首次在床
                     if (round_one_flag)
                         {
                             now_rate_bcg = rate_bcg[len_bcg - 1];
                             round_one_flag = false;
                         }
+                    // 判断是否心率发生改变或过度异常
                     if (now_rate_bcg != rate_bcg[len_bcg - 1] && (abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 15))
                         now_rate_bcg = rate_bcg[len_bcg - 1];
                 }
@@ -167,7 +174,7 @@ void app_main(void)
                 printf("心率: %d \n", now_rate_bcg);
                 
 
-                // 呼吸率
+                // 呼吸率计算
                 int peak_count_breath = 0;
                 int* peak_all_breath = fun_findAllPeaks(signal_breath, len_breath, &peak_count_breath);
                 int* peak_byheight_breath = fun_selectbyHeight(signal_breath, peak_all_breath, peak_count_breath, &peak_count_breath);
@@ -208,7 +215,7 @@ void app_main(void)
                         now_rate_breath = 0;
                         printf("呼吸率: %d \n", now_rate_breath);
                     }
-                    else
+                    else // 维持原有数值
                         printf("呼吸率: %d \n", now_rate_breath);
                 }
                 free(peak_breath);
