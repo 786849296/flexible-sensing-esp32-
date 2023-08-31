@@ -171,7 +171,12 @@ void app_main(void)
                 }
                 
                 free(rate_bcg);
+                
                 printf("心率: %d \n", now_rate_bcg);
+                if (now_rate_bcg < 50)
+                    printf("心率过慢 \n");
+                else if (now_rate_bcg > 120)
+                    printf("心率过快 \n");
                 
 
                 // 呼吸率计算
