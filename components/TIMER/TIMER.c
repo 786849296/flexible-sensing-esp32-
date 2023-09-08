@@ -19,9 +19,9 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
     if (!cd4051bmt_channel)
     {
         len++;
-        if (len >= 120)
+        if (len >= 150)
             flag_collect = true;
-        if (len == 150)
+        if (len == 170)
             len = 0;
     }
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));

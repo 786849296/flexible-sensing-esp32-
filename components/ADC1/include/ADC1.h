@@ -12,8 +12,8 @@
 #include "esp_adc/adc_cali_scheme.h"
 #include "esp_log.h"
 
-extern float raw_ele[1200];
-extern int raw_res[150][6];
+extern float raw_ele[1500];
+extern int raw_res[160][6];
 extern int len;
 
 adc_cali_handle_t adc_cali_init();

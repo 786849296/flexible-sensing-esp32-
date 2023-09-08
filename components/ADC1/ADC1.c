@@ -1,7 +1,7 @@
 #include "ADC1.h"
 
-float raw_ele[1200];
-int raw_res[150][6];
+float raw_ele[1500];
+int raw_res[160][6];
 int len = 0;
 
 #ifdef ADC_MODE_CONTINUOUS
