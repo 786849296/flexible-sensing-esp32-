@@ -13,6 +13,7 @@
                 "C:/Users/z7868/esp-idf/components/esp_adc/include",
                 "${workspaceFolder}/components/**",
                 "C:/Users/z7868/esp-idf/components/driver/uart/include",
+                "${workspaceFolder}/components/DAC/include"
             ],
             "browse": {
                 "path": [

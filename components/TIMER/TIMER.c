@@ -9,21 +9,7 @@ adc_continuous_handle_t adc_handle;
 
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
-    bool adc_flag;
-    uint8_t channel = cd4051bmt_channel;
-    cd4051bmt_channel = (cd4051bmt_channel + 1) % 8;
-    cd4051bmt_channel_set(cd4051bmt_channel);
-    adc_flag = adc1_read(adc_handle);
-    if (adc_flag)
-        get_voltage(cali_handle, channel);
-    if (!cd4051bmt_channel)
-    {
-        len++;
-        if (len >= 150)
-            flag_collect = true;
-        if (len == 170)
-            len = 0;
-    }
+
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
     //ESP_ERROR_CHECK(gptimer_start(timer_handle));

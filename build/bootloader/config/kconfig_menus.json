@@ -783,16 +783,6 @@
         "children": [],
         "depends_on": null,
         "help": null,
-        "id": "SOC_ADC_SHARED_POWER",
-        "name": "SOC_ADC_SHARED_POWER",
-        "range": null,
-        "title": null,
-        "type": "bool"
-    },
-    {
-        "children": [],
-        "depends_on": null,
-        "help": null,
         "id": "SOC_APB_BACKUP_DMA",
         "name": "SOC_APB_BACKUP_DMA",
         "range": null,
@@ -1135,16 +1125,6 @@
         "help": null,
         "id": "SOC_I2C_SUPPORT_RTC",
         "name": "SOC_I2C_SUPPORT_RTC",
-        "range": null,
-        "title": null,
-        "type": "bool"
-    },
-    {
-        "children": [],
-        "depends_on": null,
-        "help": null,
-        "id": "SOC_I2C_SUPPORT_10BIT_ADDR",
-        "name": "SOC_I2C_SUPPORT_10BIT_ADDR",
         "range": null,
         "title": null,
         "type": "bool"
@@ -6573,16 +6553,6 @@
                                 "range": null,
                                 "title": "Check the cache safety of the sleep wakeup code in sleep process",
                                 "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": null,
-                                "help": "Enable esp sleep debug.",
-                                "id": "ESP_SLEEP_DEBUG",
-                                "name": "ESP_SLEEP_DEBUG",
-                                "range": null,
-                                "title": "esp sleep debug",
-                                "type": "bool"
                             }
                         ],
                         "depends_on": null,
@@ -7368,7 +7338,7 @@
                         "children": [
                             {
                                 "children": [],
-                                "depends_on": "!ESP_SYSTEM_GDBSTUB_RUNTIME && <choice ESP_SYSTEM_PANIC>",
+                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
                                 "help": "Outputs the relevant registers over the serial port and halt the\nprocessor. Needs a manual reset to restart.",
                                 "id": "ESP_SYSTEM_PANIC_PRINT_HALT",
                                 "name": "ESP_SYSTEM_PANIC_PRINT_HALT",
@@ -7378,7 +7348,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "!ESP_SYSTEM_GDBSTUB_RUNTIME && <choice ESP_SYSTEM_PANIC>",
+                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
                                 "help": "Outputs the relevant registers over the serial port and immediately\nreset the processor.",
                                 "id": "ESP_SYSTEM_PANIC_PRINT_REBOOT",
                                 "name": "ESP_SYSTEM_PANIC_PRINT_REBOOT",
@@ -7388,7 +7358,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "!ESP_SYSTEM_GDBSTUB_RUNTIME && <choice ESP_SYSTEM_PANIC>",
+                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
                                 "help": "Just resets the processor without outputting anything",
                                 "id": "ESP_SYSTEM_PANIC_SILENT_REBOOT",
                                 "name": "ESP_SYSTEM_PANIC_SILENT_REBOOT",
@@ -7404,6 +7374,16 @@
                                 "name": "ESP_SYSTEM_PANIC_GDBSTUB",
                                 "range": null,
                                 "title": "GDBStub on panic",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "!IDF_TARGET_ESP32C2 && <choice ESP_SYSTEM_PANIC>",
+                                "help": "Invoke gdbstub on the serial port, allowing for gdb to attach to it and to do a debug on runtime.",
+                                "id": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                                "name": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                                "range": null,
+                                "title": "GDBStub at runtime",
                                 "type": "bool"
                             }
                         ],

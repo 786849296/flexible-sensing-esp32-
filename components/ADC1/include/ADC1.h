@@ -12,9 +12,14 @@
 #include "esp_adc/adc_cali_scheme.h"
 #include "esp_log.h"
 
-extern float raw_ele[1500];
-extern int raw_res[160][6];
+// #include "freertos/timers.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+
+extern float raw_ele[1200];
+extern int raw_res[150][6];
 extern int len;
+
 
 adc_cali_handle_t adc_cali_init();
 #ifdef ADC_MODE_CONTINUOUS
@@ -33,7 +38,8 @@ adc_cali_handle_t adc_cali_init();
 
     adc_continuous_handle_t adc1_init();
     bool adc1_read(adc_continuous_handle_t handle);
-    void get_voltage(adc_cali_handle_t handle, uint8_t channel);
+    void get_voltage(adc_cali_handle_t handle, uint8_t row, uint8_t col);
+    void adc_print(void *par);
 #else
     adc_oneshot_unit_handle_t adc1_init();
     void adc1_read(adc_oneshot_unit_handle_t adc_handle, adc_cali_handle_t cali_handle, int cd4051_chan);
