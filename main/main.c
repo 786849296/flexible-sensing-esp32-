@@ -12,7 +12,6 @@
 #include "freertos/task.h"
 #include "driver/ledc.h"
 #include "driver/gpio.h"
-#include "driver/adc.h"
 #include "DAC081S101.h"
 
 #ifdef APP_TRACE
@@ -45,12 +44,17 @@ void app_main(void)
 {
     gptimer_handle_t timer_handle = gptimer_init();
     ESP_ERROR_CHECK(gptimer_start(timer_handle));
-    xTaskCreate(
-            adc_print,            // 任务函数
-            "adc_print",          // 任务名称
-            4096*2,               // 栈大小，以字节为单位
-            NULL,                 // 任务参数，可以传递任意类型的数据
-            2,                    // 任务优先级，数值越高优先级越高
-            NULL);                // 任务句柄，用来引用该任务
-
+    while (true)
+    {
+        if (flag_collect)
+        {
+            int temp_len = len;
+            ESP_ERROR_CHECK(gptimer_stop(timer_handle));
+            get_voltage(NULL);
+            ESP_ERROR_CHECK(gptimer_start(timer_handle));
+            for (size_t i = 0; i < temp_len; i++)
+                printf("%d\n", raw[i]);
+            vTaskDelay(1);
+        }
+    }
 }

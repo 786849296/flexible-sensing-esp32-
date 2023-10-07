@@ -9,7 +9,8 @@ adc_continuous_handle_t adc_handle;
 
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
-
+    len = 0;
+    flag_collect = adc1_read(adc_handle);
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
@@ -44,7 +45,7 @@ gptimer_handle_t gptimer_init()
         //只能选择TIMER_SRC_CLK_XTAL时钟源。选择TIMER_SRC_CLK_APB时钟源导致初始化失败。原因未知。
         .clk_src = TIMER_SRC_CLK_XTAL,
         .direction = GPTIMER_COUNT_UP,
-        .resolution_hz = 1000
+        .resolution_hz = 10
     };
     ESP_ERROR_CHECK(gptimer_new_timer(&timer_config, &gptimer));
     gptimer_alarm_config_t alarm_cfg = 

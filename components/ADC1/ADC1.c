@@ -1,8 +1,6 @@
 #include "ADC1.h"
 
-int raw;
-int row = 1;
-int col = 1;
+uint16_t raw[1024 * 15 + 10];
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -21,7 +19,7 @@ adc_continuous_handle_t adc1_init()
     };
     ESP_ERROR_CHECK(adc_continuous_new_handle(&adc_config, &handle));
     adc_continuous_config_t dig_cfg = {
-        .sample_freq_hz = SOC_ADC_SAMPLE_FREQ_THRES_HIGH, //48000  44100
+        .sample_freq_hz = 48000, //48000  44100
         .conv_mode = ADC_CONV_SINGLE_UNIT_1,
         .format = ADC_DIGI_OUTPUT_FORMAT_TYPE2
     };
@@ -41,7 +39,7 @@ bool adc1_read(adc_continuous_handle_t handle)
     char unit[] = ADC_UNIT_STR(ADC_UNIT_1);
     esp_err_t ret;
     uint32_t ret_num = 0;
-    ret = adc_continuous_read(handle, result, READ_LEN, &ret_num, 10);
+    ret = adc_continuous_read(handle, result, READ_LEN, &ret_num, 330);
     bool flag_result = false;
     if (ret == ESP_OK)
         // ESP_LOGI("ADC", "ret is %x, ret_num is %"PRIu32" bytes", ret, ret_num);
@@ -52,7 +50,7 @@ bool adc1_read(adc_continuous_handle_t handle)
     return flag_result;
 }
 
-void get_voltage(adc_cali_handle_t handle, uint8_t row, uint8_t col)
+void get_voltage(adc_cali_handle_t handle)
 {
     uint32_t data;
     for (int i = 0; i < READ_LEN; i += SOC_ADC_DIGI_RESULT_BYTES)
@@ -63,7 +61,7 @@ void get_voltage(adc_cali_handle_t handle, uint8_t row, uint8_t col)
         if (chan_num == 6)
         {
             // ESP_ERROR_CHECK(adc_cali_raw_to_voltage(handle, data, &raw[row][col]));
-            raw = data;
+            raw[len++] = data;
             // raw[row][col] /= 1000.0;
         }
         //ESP_LOGI("cail", "ADC%d Channel[%"PRIu32"] Cali Voltage: %"PRIu32" mV", ADC_UNIT_1 + 1, chan_num, v.voltage[i / SOC_ADC_DIGI_RESULT_BYTES]);
@@ -116,7 +114,7 @@ void adc_print(void *par)
 {
     while (1)
     {
-        printf("%d \n", raw);
+        //printf("%d \n", raw);
         vTaskDelay(1 / portTICK_PERIOD_MS);
     }
 }

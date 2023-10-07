@@ -16,15 +16,13 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-extern float raw_ele[1200];
-extern int raw_res[150][6];
 extern int len;
-
+extern uint16_t raw[1024 * 15 + 10];
 
 adc_cali_handle_t adc_cali_init();
 #ifdef ADC_MODE_CONTINUOUS
 
-    #define READ_NUM 2
+    #define READ_NUM 1024 * 15
     #define READ_LEN SOC_ADC_DIGI_DATA_BYTES_PER_CONV * READ_NUM
 
     static uint8_t result[READ_LEN] = { 0 };
@@ -38,7 +36,7 @@ adc_cali_handle_t adc_cali_init();
 
     adc_continuous_handle_t adc1_init();
     bool adc1_read(adc_continuous_handle_t handle);
-    void get_voltage(adc_cali_handle_t handle, uint8_t row, uint8_t col);
+    void get_voltage(adc_cali_handle_t handle);
     void adc_print(void *par);
 #else
     adc_oneshot_unit_handle_t adc1_init();
