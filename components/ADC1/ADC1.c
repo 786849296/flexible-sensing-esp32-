@@ -1,6 +1,7 @@
 #include "ADC1.h"
 
-uint16_t raw[1024 * 15 + 10];
+uint16_t raw[1024 + 10];
+int len;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -39,7 +40,7 @@ bool adc1_read(adc_continuous_handle_t handle)
     char unit[] = ADC_UNIT_STR(ADC_UNIT_1);
     esp_err_t ret;
     uint32_t ret_num = 0;
-    ret = adc_continuous_read(handle, result, READ_LEN, &ret_num, 330);
+    ret = adc_continuous_read(handle, result, READ_LEN, &ret_num, 22);
     bool flag_result = false;
     if (ret == ESP_OK)
         // ESP_LOGI("ADC", "ret is %x, ret_num is %"PRIu32" bytes", ret, ret_num);

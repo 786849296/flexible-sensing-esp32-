@@ -17,12 +17,12 @@
 #include "freertos/task.h"
 
 extern int len;
-extern uint16_t raw[1024 * 15 + 10];
+extern uint16_t raw[1024 + 10];
 
 adc_cali_handle_t adc_cali_init();
 #ifdef ADC_MODE_CONTINUOUS
 
-    #define READ_NUM 1024 * 15
+    #define READ_NUM 1024
     #define READ_LEN SOC_ADC_DIGI_DATA_BYTES_PER_CONV * READ_NUM
 
     static uint8_t result[READ_LEN] = { 0 };

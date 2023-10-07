@@ -49,9 +49,9 @@ void app_main(void)
         if (flag_collect)
         {
             int temp_len = len;
-            ESP_ERROR_CHECK(gptimer_stop(timer_handle));
+            //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
             get_voltage(NULL);
-            ESP_ERROR_CHECK(gptimer_start(timer_handle));
+            //ESP_ERROR_CHECK(gptimer_start(timer_handle));
             for (size_t i = 0; i < temp_len; i++)
                 printf("%d\n", raw[i]);
             vTaskDelay(1);
