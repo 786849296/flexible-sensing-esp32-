@@ -67,6 +67,7 @@ D:/Desktop/flexible-sensing-esp32-/build/esp-idf/wifi_provisioning/libwifi_provi
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/main/libmain.a
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/ADC1/libADC1.a
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/CD4051BMT/libCD4051BMT.a
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/libMIC.a
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/TIMER/libTIMER.a
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/UART/libUART.a
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/algorithm/libalgorithm.a

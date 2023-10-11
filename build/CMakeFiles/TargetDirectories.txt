@@ -647,6 +647,13 @@ D:/Desktop/flexible-sensing-esp32-/build/esp-idf/CD4051BMT/CMakeFiles/list_insta
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/CD4051BMT/CMakeFiles/install.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/CD4051BMT/CMakeFiles/install/local.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/CD4051BMT/CMakeFiles/install/strip.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/__idf_MIC.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/edit_cache.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/rebuild_cache.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/list_install_components.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/install.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/install/local.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/CMakeFiles/install/strip.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/TIMER/CMakeFiles/__idf_TIMER.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/TIMER/CMakeFiles/edit_cache.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/TIMER/CMakeFiles/rebuild_cache.dir

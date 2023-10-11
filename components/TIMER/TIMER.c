@@ -18,8 +18,8 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
         get_voltage(cali_handle, channel);
     if (!cd4051bmt_channel)
     {
-        len++;
-        if (len >= 150)
+        // len++;
+        // if (len >= 150)
             flag_collect = true;
         if (len == 170)
             len = 0;

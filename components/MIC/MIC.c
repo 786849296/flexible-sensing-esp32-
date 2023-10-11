@@ -2,7 +2,7 @@
 #include "MIC.h"
 // #include <stdbool.h>
 
-int sgn(data) {
+int sgn(float data) {
     if (data >= 0)
         return 1;
     else
