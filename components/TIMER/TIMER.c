@@ -45,12 +45,12 @@ gptimer_handle_t gptimer_init()
         //只能选择TIMER_SRC_CLK_XTAL时钟源。选择TIMER_SRC_CLK_APB时钟源导致初始化失败。原因未知。
         .clk_src = TIMER_SRC_CLK_XTAL,
         .direction = GPTIMER_COUNT_UP,
-        .resolution_hz = 150
+        .resolution_hz = 1500
     };
     ESP_ERROR_CHECK(gptimer_new_timer(&timer_config, &gptimer));
     gptimer_alarm_config_t alarm_cfg = 
     {
-        .alarm_count = 10,
+        .alarm_count = 100,
         .reload_count = 0,
         .flags.auto_reload_on_alarm = true
     };

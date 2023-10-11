@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "blink",
-    "project_version":    "f86e899-dirty",
+    "project_version":    "48dd613-dirty",
     "project_path":       "E:/project/esp32/flexible-sensing-esp32-",
     "idf_path":           "C:/Users/z7868/esp-idf",
     "build_dir":          "E:/project/esp32/flexible-sensing-esp32-/build",
@@ -17,7 +17,7 @@
     "min_rev":            "0",
     "max_rev":            "99",
     "phy_data_partition": "",
-    "monitor_baud" :      "115200",
+    "monitor_baud" :      "2500000",
     "monitor_toolprefix": "xtensa-esp32s3-elf-",
     "c_compiler":         "C:/Users/z7868/.espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208/xtensa-esp32s3-elf/bin/xtensa-esp32s3-elf-gcc.exe",
     "config_environment" : {
