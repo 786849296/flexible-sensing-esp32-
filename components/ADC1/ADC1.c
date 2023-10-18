@@ -20,7 +20,7 @@ adc_continuous_handle_t adc1_init()
     };
     ESP_ERROR_CHECK(adc_continuous_new_handle(&adc_config, &handle));
     adc_continuous_config_t dig_cfg = {
-        .sample_freq_hz = 48000, //48000  44100
+        .sample_freq_hz = 16000, //44100 16000
         .conv_mode = ADC_CONV_SINGLE_UNIT_1,
         .format = ADC_DIGI_OUTPUT_FORMAT_TYPE2
     };
