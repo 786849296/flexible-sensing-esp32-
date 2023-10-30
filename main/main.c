@@ -5,6 +5,7 @@
 #include "CD4051BMT.h"
 #include "ADC1.h"
 #include "TIMER.h"
+#include "MIC.h"
 #include "algorithm.h"
 #include "find_peaks.h"
 #include "esp_log.h"
@@ -20,6 +21,8 @@
 
 int adc_value = 0;
 int temp[6];
+float zero_crossing_rate = 0;
+float short_time_energy = 0;
 #define ADC1_CHAN1 7//GPIO5
 //列8选1开关的切换
 #define ARM2DEC_COL_SEL0 42
@@ -52,6 +55,8 @@ void app_main(void)
             len = 0;
             get_voltage(NULL);
             //ESP_ERROR_CHECK(gptimer_start(timer_handle));
+            zero_crossing_rate = cal_zero_crossing_rate(raw, len);
+            short_time_energy = cal_short_time_energy(raw, len);
             for (size_t i = 0; i < len; i++)
                 printf("%d\n", raw[i]);
             // printf("%d\n", temp_len);
