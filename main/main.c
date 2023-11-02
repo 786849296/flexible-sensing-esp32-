@@ -263,10 +263,11 @@ void app_main(void)
         //     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
         //     led = !led;
         //     gpio_set_level(GPIO_NUM_45, led);
+            
         // }
-        // // printf(" ");
-        // // printf("cd4051bmt_channel: %d\n", cd4051bmt_channel);
+        // vTaskDelay(1);
+        // printf(" ");
+        // printf("cd4051bmt_channel: %d\n", cd4051bmt_channel);
         
-
     }
 }
