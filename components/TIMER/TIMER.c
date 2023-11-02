@@ -5,6 +5,11 @@ bool flag_collect = false;
 int count_bodyMove = 0; // 体动的计数器
 int cnt = 0;
 int cpm_bodyMove = 0;   // 每分钟体动的计数
+int count_rate_bcg = 0;
+float cpm_rate_bcg = 0;
+float cpm_rate_bcg_wake = 0;
+//在床：0 清醒：1 浅睡：2 深睡：3
+int status = 0;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -32,6 +37,39 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
         cnt = 0;
         cpm_bodyMove = count_bodyMove;
         count_bodyMove = 0;
+        cpm_rate_bcg = count_rate_bcg / 20.0;
+        count_rate_bcg = 0;
+        switch (status)
+        {
+        case 1:
+            if (cpm_bodyMove < 3 && cpm_rate_bcg < cpm_rate_bcg_wake)
+            //TODO: 开启鼾声检测
+                status = 2;
+            break;
+        case 2:
+            if (cpm_bodyMove >= 3)
+            {
+                status = 1;
+                cpm_rate_bcg_wake = cpm_rate_bcg;
+            }
+            else if (cpm_rate_bcg <= cpm_rate_bcg_wake * 0.9)
+                status = 3;
+            break;
+        case 3:
+            if (cpm_bodyMove >= 3)
+            {
+                status = 1;
+                cpm_rate_bcg_wake = cpm_rate_bcg;
+            }
+            else if (cpm_rate_bcg < cpm_rate_bcg_wake)
+            //TODO: 开启鼾声检测
+                status = 2;
+            break;
+        default:
+            status = 1;
+            cpm_rate_bcg_wake = cpm_rate_bcg;
+            break;
+        }
     }
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;

@@ -8,6 +8,9 @@
 extern bool flag_collect;
 extern bool flag_cooldown;
 extern int cpm_bodyMove;
+extern int count_rate_bcg;
+extern float cpm_rate_bcg;
+extern int status;
 
 //ADC定时器，10ms，周期
 gptimer_handle_t gptimer_init();

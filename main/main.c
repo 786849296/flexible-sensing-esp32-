@@ -185,6 +185,7 @@ void app_main(void)
                 else if (now_rate_bcg > 120)
                     printf("心率过快 \n");
                 
+                count_rate_bcg += now_rate_bcg;
 
                 // 呼吸率计算
                 int peak_count_breath = 0;
@@ -245,6 +246,7 @@ void app_main(void)
             led = !led;
             gpio_set_level(GPIO_NUM_45, led);
             printf("\n");
+            printf("平均体动：%d， 平均心率：%f， 睡眠状态：%d\n", cpm_bodyMove, cpm_rate_bcg, status);
             vTaskDelay(1);
         }
 
