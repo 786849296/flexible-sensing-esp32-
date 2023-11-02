@@ -1,0 +1,6 @@
+.devcontainer/
+.vscode/
+build/
+trace/
+/debug.log
+/dependencies.lock

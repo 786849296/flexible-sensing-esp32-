@@ -2,6 +2,9 @@
 
 adc_cali_handle_t cali_handle;
 bool flag_collect = false;
+int count_bodyMove = 0; // 体动的计数器
+int cnt = 0;
+int cpm_bodyMove = 0;   // 每分钟体动的计数
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -23,6 +26,12 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
             flag_collect = true;
         if (len == 170)
             len = 0;
+    }
+    if (cnt++ == 1000 * 60)
+    {
+        cnt = 0;
+        cpm_bodyMove = count_bodyMove;
+        count_bodyMove = 0;
     }
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
@@ -83,6 +92,43 @@ gptimer_handle_t gptimer_init()
     ESP_ERROR_CHECK(adc_continuous_start(adc_handle));
 
 #endif
+
+    return gptimer;
+}
+
+bool flag_cooldown = false;
+
+static bool timer2_on_alarm_cb_bodyMove(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
+{
+    count_bodyMove++;
+    flag_cooldown = false;
+    ESP_ERROR_CHECK(gptimer_stop(handle));
+    return true;
+}
+
+gptimer_handle_t gptimer2_init()
+{
+    gptimer_handle_t gptimer = NULL;
+    gptimer_config_t timer_config = {
+        //只能选择TIMER_SRC_CLK_XTAL时钟源。选择TIMER_SRC_CLK_APB时钟源导致初始化失败。原因未知。
+        .clk_src = TIMER_SRC_CLK_XTAL,
+        .direction = GPTIMER_COUNT_UP,
+        .resolution_hz = 1000
+    };
+    ESP_ERROR_CHECK(gptimer_new_timer(&timer_config, &gptimer));
+    gptimer_alarm_config_t alarm_cfg = 
+    {
+        .alarm_count = 10 * 1000,
+        .reload_count = 0,
+        .flags.auto_reload_on_alarm = true
+    };
+    ESP_ERROR_CHECK(gptimer_set_alarm_action(gptimer, &alarm_cfg));
+    gptimer_event_callbacks_t cbs = {
+        .on_alarm = timer2_on_alarm_cb_bodyMove
+    };
+    uint64_t test[10];
+    ESP_ERROR_CHECK(gptimer_register_event_callbacks(gptimer, &cbs, test));
+    ESP_ERROR_CHECK(gptimer_enable(gptimer));
 
     return gptimer;
 }

@@ -34,7 +34,9 @@ float signal_breath[1200];
 void app_main(void)
 {
     gptimer_handle_t timer_handle = gptimer_init();
+    gptimer_handle_t timer2_handle = gptimer2_init();
     ESP_ERROR_CHECK(gptimer_start(timer_handle));
+
     cd4051bmt_init();
     //uart_init();
     bool led = 0;
@@ -94,6 +96,11 @@ void app_main(void)
                 printf("状态: 在床 \n");
                 break;
             case 2:
+                if (!flag_cooldown)
+                {
+                    flag_cooldown = true;
+                    ESP_ERROR_CHECK(gptimer_start(timer2_handle));
+                }
                 printf("状态: 体动 \n");
                 break;
             }
