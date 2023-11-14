@@ -783,6 +783,16 @@
         "children": [],
         "depends_on": null,
         "help": null,
+        "id": "SOC_ADC_SHARED_POWER",
+        "name": "SOC_ADC_SHARED_POWER",
+        "range": null,
+        "title": null,
+        "type": "bool"
+    },
+    {
+        "children": [],
+        "depends_on": null,
+        "help": null,
         "id": "SOC_APB_BACKUP_DMA",
         "name": "SOC_APB_BACKUP_DMA",
         "range": null,
@@ -1125,6 +1135,16 @@
         "help": null,
         "id": "SOC_I2C_SUPPORT_RTC",
         "name": "SOC_I2C_SUPPORT_RTC",
+        "range": null,
+        "title": null,
+        "type": "bool"
+    },
+    {
+        "children": [],
+        "depends_on": null,
+        "help": null,
+        "id": "SOC_I2C_SUPPORT_10BIT_ADDR",
+        "name": "SOC_I2C_SUPPORT_10BIT_ADDR",
         "range": null,
         "title": null,
         "type": "bool"
@@ -6803,6 +6823,16 @@
                                     {
                                         "children": [],
                                         "depends_on": "BT_CLASSIC_ENABLED && BT_BLUEDROID_ENABLED",
+                                        "help": "This enables functionalities of Host qualification for Classic Bluetooth.",
+                                        "id": "BT_CLASSIC_BQB_ENABLED",
+                                        "name": "BT_CLASSIC_BQB_ENABLED",
+                                        "range": null,
+                                        "title": "Host Qualitifcation support for Classic Bluetooth",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "BT_CLASSIC_ENABLED && BT_BLUEDROID_ENABLED",
                                         "help": "Advanced Audio Distrubution Profile",
                                         "id": "BT_A2DP_ENABLE",
                                         "name": "BT_A2DP_ENABLE",
@@ -9212,6 +9242,16 @@
                                 "range": null,
                                 "title": "Enable BLE periodic advertising sync transfer feature",
                                 "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": "BT_BLUEDROID_ENABLED && BT_BLUEDROID_ENABLED",
+                                "help": "This enable BLE high duty advertising interval feature",
+                                "id": "BT_BLE_HIGH_DUTY_ADV_INTERVAL",
+                                "name": "BT_BLE_HIGH_DUTY_ADV_INTERVAL",
+                                "range": null,
+                                "title": "Enable BLE high duty advertising interval feature",
+                                "type": "bool"
                             }
                         ],
                         "depends_on": "BT_BLUEDROID_ENABLED",
@@ -10020,6 +10060,16 @@
                                         "range": null,
                                         "title": "Enable support for BLE Power Control",
                                         "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "BT_NIMBLE_ENABLE_PERIODIC_ADV && BT_NIMBLE_50_FEATURE_SUPPORT && SOC_BLE_PERIODIC_ADV_ENH_SUPPORTED && BT_NIMBLE_ENABLED",
+                                        "help": "Enable the periodic advertising enhancements",
+                                        "id": "BT_NIMBLE_PERIODIC_ADV_ENH",
+                                        "name": "BT_NIMBLE_PERIODIC_ADV_ENH",
+                                        "range": null,
+                                        "title": "Periodic adv enhancements(adi support)",
+                                        "type": "bool"
                                     }
                                 ],
                                 "depends_on": "BT_NIMBLE_ENABLED && (SOC_BLE_50_SUPPORTED || !BT_CONTROLLER_ENABLED) && BT_NIMBLE_ENABLED",
@@ -10426,6 +10476,27 @@
                                 "range": null,
                                 "title": "Enable the optimization of multi-connection",
                                 "type": "bool"
+                            },
+                            {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "BT_NIMBLE_ENABLED && BT_NIMBLE_ENC_ADV_DATA && BT_NIMBLE_ENABLED",
+                                        "help": "Defines maximum number of encrypted advertising data key material to save",
+                                        "id": "BT_NIMBLE_MAX_EADS",
+                                        "name": "BT_NIMBLE_MAX_EADS",
+                                        "range": null,
+                                        "title": "Maximum number of EAD devices to save across reboots",
+                                        "type": "int"
+                                    }
+                                ],
+                                "depends_on": "SOC_ESP_NIMBLE_CONTROLLER && BT_NIMBLE_ENABLED",
+                                "help": "This option is used to enable encrypted advertising data.",
+                                "id": "BT_NIMBLE_ENC_ADV_DATA",
+                                "name": "BT_NIMBLE_ENC_ADV_DATA",
+                                "range": null,
+                                "title": "Encrypted Advertising Data",
+                                "type": "bool"
                             }
                         ],
                         "depends_on": "BT_NIMBLE_ENABLED",
@@ -10566,14 +10637,54 @@
                                 "type": "int"
                             },
                             {
+                                "children": [
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice BT_BLE_CCA_MODE>",
+                                        "help": null,
+                                        "id": "BT_BLE_CCA_MODE_NONE",
+                                        "name": "BT_BLE_CCA_MODE_NONE",
+                                        "range": null,
+                                        "title": "NONE",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice BT_BLE_CCA_MODE>",
+                                        "help": null,
+                                        "id": "BT_BLE_CCA_MODE_HW",
+                                        "name": "BT_BLE_CCA_MODE_HW",
+                                        "range": null,
+                                        "title": "Hardware",
+                                        "type": "bool"
+                                    },
+                                    {
+                                        "children": [],
+                                        "depends_on": "<choice BT_BLE_CCA_MODE>",
+                                        "help": null,
+                                        "id": "BT_BLE_CCA_MODE_SW",
+                                        "name": "BT_BLE_CCA_MODE_SW",
+                                        "range": null,
+                                        "title": "Software",
+                                        "type": "bool"
+                                    }
+                                ],
+                                "depends_on": "BT_CONTROLLER_ENABLED",
+                                "help": "Define BT BLE CCA mode",
+                                "id": "component-config-bluetooth-controller-options-ble-cca-mode",
+                                "name": "BT_BLE_CCA_MODE",
+                                "title": "BLE CCA mode",
+                                "type": "choice"
+                            },
+                            {
                                 "children": [],
                                 "depends_on": "BT_CONTROLLER_ENABLED",
-                                "help": "It enables HW CCA feature in controller",
-                                "id": "BT_CTRL_HW_CCA",
-                                "name": "BT_CTRL_HW_CCA",
+                                "help": null,
+                                "id": "BT_BLE_CCA_MODE",
+                                "name": "BT_BLE_CCA_MODE",
                                 "range": null,
-                                "title": "HW CCA check enable",
-                                "type": "bool"
+                                "title": null,
+                                "type": "int"
                             },
                             {
                                 "children": [],
@@ -11245,7 +11356,7 @@
                     },
                     {
                         "children": [],
-                        "depends_on": "BT_BLUEDROID_ENABLED && BLE_MESH",
+                        "depends_on": "BLE_MESH",
                         "help": "Enable this option to allow using specific duplicate scan filter\nin BLE Mesh, and Scan Duplicate Type must be set by choosing the\noption in the Bluetooth Controller section in menuconfig, which is\n\"Scan Duplicate By Device Address and Advertising Data\".",
                         "id": "BLE_MESH_USE_DUPLICATE_SCAN",
                         "name": "BLE_MESH_USE_DUPLICATE_SCAN",
@@ -13106,6 +13217,16 @@
                             {
                                 "children": [],
                                 "depends_on": null,
+                                "help": "Place GPTimer ISR handler into IRAM for better performance and fewer cache misses.",
+                                "id": "GPTIMER_ISR_HANDLER_IN_IRAM",
+                                "name": "GPTIMER_ISR_HANDLER_IN_IRAM",
+                                "range": null,
+                                "title": "Place GPTimer ISR handler into IRAM",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": null,
                                 "help": "Place GPTimer control functions (like start/stop) into IRAM,\nso that these functions can be IRAM-safe and able to be called in the other IRAM interrupt context.\nEnabling this option can improve driver performance as well.",
                                 "id": "GPTIMER_CTRL_FUNC_IN_IRAM",
                                 "name": "GPTIMER_CTRL_FUNC_IN_IRAM",
@@ -13441,6 +13562,34 @@
                         "depends_on": null,
                         "id": "component-config-driver-configurations-ledc-configuration",
                         "title": "LEDC Configuration",
+                        "type": "menu"
+                    },
+                    {
+                        "children": [
+                            {
+                                "children": [],
+                                "depends_on": null,
+                                "help": "Ensure the I2C interrupt is IRAM-Safe by allowing the interrupt handler to be\nexecutable when the cache is disabled (e.g. SPI Flash write).\nnote: This cannot be used in the I2C legacy driver.",
+                                "id": "I2C_ISR_IRAM_SAFE",
+                                "name": "I2C_ISR_IRAM_SAFE",
+                                "range": null,
+                                "title": "I2C ISR IRAM-Safe",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": null,
+                                "help": "Wether to enable the debug log message for I2C driver.\nNote that this option only controls the I2C driver log, will not affect other drivers.\n\nnote: This cannot be used in the I2C legacy driver.",
+                                "id": "I2C_ENABLE_DEBUG_LOG",
+                                "name": "I2C_ENABLE_DEBUG_LOG",
+                                "range": null,
+                                "title": "Enable I2C debug log",
+                                "type": "bool"
+                            }
+                        ],
+                        "depends_on": null,
+                        "id": "component-config-driver-configurations-i2c-configuration",
+                        "title": "I2C Configuration",
                         "type": "menu"
                     }
                 ],
@@ -14168,6 +14317,16 @@
                         "type": "bool"
                     },
                     {
+                        "children": [],
+                        "depends_on": null,
+                        "help": "Enable builtin GDBStub.\nThis allows to debug the target device using serial port:\n- Run 'idf.py monitor'.\n- Wait for the device to initialize.\n- Press Ctrl+C to interrupt the execution and enter GDB attached to your device for debugging.\nNOTE: all UART input will be handled by GDBStub.",
+                        "id": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                        "name": "ESP_SYSTEM_GDBSTUB_RUNTIME",
+                        "range": null,
+                        "title": "GDBStub at runtime",
+                        "type": "bool"
+                    },
+                    {
                         "children": [
                             {
                                 "children": [],
@@ -14677,6 +14836,16 @@
                                 "name": "ESP_SLEEP_CACHE_SAFE_ASSERTION",
                                 "range": null,
                                 "title": "Check the cache safety of the sleep wakeup code in sleep process",
+                                "type": "bool"
+                            },
+                            {
+                                "children": [],
+                                "depends_on": null,
+                                "help": "Enable esp sleep debug.",
+                                "id": "ESP_SLEEP_DEBUG",
+                                "name": "ESP_SLEEP_DEBUG",
+                                "range": null,
+                                "title": "esp sleep debug",
                                 "type": "bool"
                             }
                         ],
@@ -16360,7 +16529,7 @@
                         "children": [
                             {
                                 "children": [],
-                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
+                                "depends_on": "!ESP_SYSTEM_GDBSTUB_RUNTIME && <choice ESP_SYSTEM_PANIC>",
                                 "help": "Outputs the relevant registers over the serial port and halt the\nprocessor. Needs a manual reset to restart.",
                                 "id": "ESP_SYSTEM_PANIC_PRINT_HALT",
                                 "name": "ESP_SYSTEM_PANIC_PRINT_HALT",
@@ -16370,7 +16539,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
+                                "depends_on": "!ESP_SYSTEM_GDBSTUB_RUNTIME && <choice ESP_SYSTEM_PANIC>",
                                 "help": "Outputs the relevant registers over the serial port and immediately\nreset the processor.",
                                 "id": "ESP_SYSTEM_PANIC_PRINT_REBOOT",
                                 "name": "ESP_SYSTEM_PANIC_PRINT_REBOOT",
@@ -16380,7 +16549,7 @@
                             },
                             {
                                 "children": [],
-                                "depends_on": "<choice ESP_SYSTEM_PANIC>",
+                                "depends_on": "!ESP_SYSTEM_GDBSTUB_RUNTIME && <choice ESP_SYSTEM_PANIC>",
                                 "help": "Just resets the processor without outputting anything",
                                 "id": "ESP_SYSTEM_PANIC_SILENT_REBOOT",
                                 "name": "ESP_SYSTEM_PANIC_SILENT_REBOOT",
@@ -16396,16 +16565,6 @@
                                 "name": "ESP_SYSTEM_PANIC_GDBSTUB",
                                 "range": null,
                                 "title": "GDBStub on panic",
-                                "type": "bool"
-                            },
-                            {
-                                "children": [],
-                                "depends_on": "!IDF_TARGET_ESP32C2 && <choice ESP_SYSTEM_PANIC>",
-                                "help": "Invoke gdbstub on the serial port, allowing for gdb to attach to it and to do a debug on runtime.",
-                                "id": "ESP_SYSTEM_GDBSTUB_RUNTIME",
-                                "name": "ESP_SYSTEM_GDBSTUB_RUNTIME",
-                                "range": null,
-                                "title": "GDBStub at runtime",
                                 "type": "bool"
                             }
                         ],
@@ -23248,11 +23407,21 @@
                     {
                         "children": [],
                         "depends_on": "MBEDTLS_ECP_C",
-                        "help": "NIST 'modulo p' optimisations increase Elliptic Curve operation performance.\n\nDisabling this option saves some code size.\n\n# end of Elliptic Curve options",
+                        "help": "NIST 'modulo p' optimisations increase Elliptic Curve operation performance.\n\nDisabling this option saves some code size.",
                         "id": "MBEDTLS_ECP_NIST_OPTIM",
                         "name": "MBEDTLS_ECP_NIST_OPTIM",
                         "range": null,
                         "title": "NIST 'modulo p' optimisations",
+                        "type": "bool"
+                    },
+                    {
+                        "children": [],
+                        "depends_on": "MBEDTLS_ECP_C",
+                        "help": "This configuration option enables optimizations to speedup (about 3 ~ 4 times) the ECP\nfixed point multiplication using pre-computed tables in the flash memory.\nDisabling this configuration option saves flash footprint (about 29KB if all Elliptic Curve selected)\nin the application binary.\n\n# end of Elliptic Curve options",
+                        "id": "MBEDTLS_ECP_FIXED_POINT_OPTIM",
+                        "name": "MBEDTLS_ECP_FIXED_POINT_OPTIM",
+                        "range": null,
+                        "title": "Enable fixed-point multiplication optimisations",
                         "type": "bool"
                     },
                     {

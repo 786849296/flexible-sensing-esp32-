@@ -39,6 +39,7 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
         cpm_bodyMove = count_bodyMove;
         count_bodyMove = 0;
         cpm_rate_bcg = count_rate_bcg / 120.0;
+        cpm_rate_bcg = count_rate_bcg / 120.0;
         count_rate_bcg = 0;
         switch (status)
         {

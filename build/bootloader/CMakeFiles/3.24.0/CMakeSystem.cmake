@@ -1,9 +1,15 @@
+<<<<<<< HEAD
 set(CMAKE_HOST_SYSTEM "Windows-10.0.22631")
 set(CMAKE_HOST_SYSTEM_NAME "Windows")
 set(CMAKE_HOST_SYSTEM_VERSION "10.0.22631")
+=======
+set(CMAKE_HOST_SYSTEM "Windows-10.0.19045")
+set(CMAKE_HOST_SYSTEM_NAME "Windows")
+set(CMAKE_HOST_SYSTEM_VERSION "10.0.19045")
+>>>>>>> aaa6e27f2f45425d909ff03cd983e4657f7816f2
 set(CMAKE_HOST_SYSTEM_PROCESSOR "AMD64")
 
-include("C:/Users/z7868/esp-idf/tools/cmake/toolchain-esp32s3.cmake")
+include("D:/application/ESPIDFcontainer/esp-idf/tools/cmake/toolchain-esp32s3.cmake")
 
 set(CMAKE_SYSTEM "Generic")
 set(CMAKE_SYSTEM_NAME "Generic")
