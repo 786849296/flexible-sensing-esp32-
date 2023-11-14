@@ -65,7 +65,7 @@ void get_voltage(adc_cali_handle_t handle, uint8_t channel)
         uint32_t chan_num = ADC_GET_CHANNEL(p);
         data = ADC_GET_DATA(p);
         if (chan_num == 4 && channel < 6)
-            ESP_ERROR_CHECK(adc_cali_raw_to_voltage(handle, data, &raw_res[len][channel]));
+            raw_res[len][channel] = data;
         else if(chan_num == 3)
         {
             int temp;
