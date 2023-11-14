@@ -1,7 +1,7 @@
 {
     "version":            "1",
     "project_name":       "blink",
-    "project_version":    "5dc1e57-dirty",
+    "project_version":    "5db9e1f-dirty",
     "project_path":       "E:/project/esp32/flexible-sensing-esp32-",
     "idf_path":           "C:/Users/z7868/esp-idf",
     "build_dir":          "E:/project/esp32/flexible-sensing-esp32-/build",

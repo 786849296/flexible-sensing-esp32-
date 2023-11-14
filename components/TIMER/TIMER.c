@@ -33,45 +33,45 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
             len = 0;
     }
     
-    // if (cnt++ == 1000 * 60)
-    // {
-    //     cnt = 0;
-    //     cpm_bodyMove = count_bodyMove;
-    //     count_bodyMove = 0;
-    //     cpm_rate_bcg = count_rate_bcg / 20.0;
-    //     count_rate_bcg = 0;
-    //     switch (status)
-    //     {
-    //     case 1:
-    //         if (cpm_bodyMove < 3 && cpm_rate_bcg < cpm_rate_bcg_wake)
-    //         //TODO: 开启鼾声检测
-    //             status = 2;
-    //         break;
-    //     case 2:
-    //         if (cpm_bodyMove >= 3)
-    //         {
-    //             status = 1;
-    //             cpm_rate_bcg_wake = cpm_rate_bcg;
-    //         }
-    //         else if (cpm_rate_bcg <= cpm_rate_bcg_wake * 0.9)
-    //             status = 3;
-    //         break;
-    //     case 3:
-    //         if (cpm_bodyMove >= 3)
-    //         {
-    //             status = 1;
-    //             cpm_rate_bcg_wake = cpm_rate_bcg;
-    //         }
-    //         else if (cpm_rate_bcg < cpm_rate_bcg_wake)
-    //         //TODO: 开启鼾声检测
-    //             status = 2;
-    //         break;
-    //     default:
-    //         status = 1;
-    //         cpm_rate_bcg_wake = cpm_rate_bcg;
-    //         break;
-    //     }
-    // }
+    if (cnt++ == 100 * 60)
+    {
+        cnt = 0;
+        cpm_bodyMove = count_bodyMove;
+        count_bodyMove = 0;
+        cpm_rate_bcg = count_rate_bcg / 120.0;
+        count_rate_bcg = 0;
+        switch (status)
+        {
+        case 1:
+            if (cpm_bodyMove < 3 && cpm_rate_bcg < cpm_rate_bcg_wake)
+            //TODO: 开启鼾声检测
+                status = 2;
+            break;
+        case 2:
+            if (cpm_bodyMove >= 3)
+            {
+                status = 1;
+                cpm_rate_bcg_wake = cpm_rate_bcg;
+            }
+            else if (cpm_rate_bcg <= cpm_rate_bcg_wake * 0.9)
+                status = 3;
+            break;
+        case 3:
+            if (cpm_bodyMove >= 3)
+            {
+                status = 1;
+                cpm_rate_bcg_wake = cpm_rate_bcg;
+            }
+            else if (cpm_rate_bcg < cpm_rate_bcg_wake)
+            //TODO: 开启鼾声检测
+                status = 2;
+            break;
+        default:
+            status = 1;
+            cpm_rate_bcg_wake = cpm_rate_bcg;
+            break;
+        }
+    }
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
