@@ -80,7 +80,7 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
                 status = 1;
                 cpm_rate_bcg_wake = cpm_rate_bcg;
             }
-            else if (cpm_rate_bcg > cpm_rate_bcg_wake)
+            else if (cpm_rate_bcg > cpm_rate_bcg_wake * 0.9)
                 status = 2;
             break;
         default:
