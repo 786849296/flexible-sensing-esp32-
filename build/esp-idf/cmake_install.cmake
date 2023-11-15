@@ -434,20 +434,12 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-<<<<<<< HEAD
-  include("E:/project/esp32/flexible-sensing-esp32-/build/esp-idf/MIC/cmake_install.cmake")
-=======
   include("D:/Desktop/flexible-sensing-esp32-/build/esp-idf/MIC/cmake_install.cmake")
->>>>>>> aaa6e27f2f45425d909ff03cd983e4657f7816f2
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-<<<<<<< HEAD
-  include("E:/project/esp32/flexible-sensing-esp32-/build/esp-idf/TIMER/cmake_install.cmake")
-=======
   include("D:/Desktop/flexible-sensing-esp32-/build/esp-idf/TIMER/cmake_install.cmake")
->>>>>>> aaa6e27f2f45425d909ff03cd983e4657f7816f2
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)

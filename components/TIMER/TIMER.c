@@ -6,10 +6,11 @@ int count_bodyMove = 0; // 体动的计数器
 int cnt = 0;
 int cpm_bodyMove = 0;   // 每分钟体动的计数
 int count_rate_bcg = 0;
-float cpm_rate_bcg = 0;
-float cpm_rate_bcg_wake = 0;
+double cpm_rate_bcg = 0;
+double cpm_rate_bcg_wake = 0;
 //在床：0 清醒：1 浅睡：2 深睡：3
 int status = 0;
+extern bool state_flag;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -27,34 +28,50 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
     if (!cd4051bmt_channel)
     {
         len++;
-        // if (len >= 150)
+        if (len >= 150)
             flag_collect = true;
         if (len == 170)
             len = 0;
     }
     
+    if (state_flag)
+    {
+        cnt = 0;
+        count_bodyMove = 0;
+        count_rate_bcg = 0;
+        status = 0;
+    }
+
     if (cnt++ == 100 * 60)
     {
         cnt = 0;
         cpm_bodyMove = count_bodyMove;
         count_bodyMove = 0;
         cpm_rate_bcg = count_rate_bcg / 120.0;
-        cpm_rate_bcg = count_rate_bcg / 120.0;
         count_rate_bcg = 0;
         switch (status)
         {
         case 1:
-            if (cpm_bodyMove < 3 && cpm_rate_bcg < cpm_rate_bcg_wake)
-            //TODO: 开启鼾声检测
-                status = 2;
+            if (cpm_bodyMove < 3)
+            {
+                if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.98)
+                {
+                    //TODO: 开启鼾声检测
+                    status = 2;
+                }
+            }
+            else
+            {
+                cpm_rate_bcg_wake = cpm_rate_bcg;
+            }
             break;
         case 2:
-            if (cpm_bodyMove >= 3)
+            if (cpm_bodyMove >= 3 || cpm_rate_bcg > cpm_rate_bcg_wake * 1.04)
             {
                 status = 1;
                 cpm_rate_bcg_wake = cpm_rate_bcg;
             }
-            else if (cpm_rate_bcg <= cpm_rate_bcg_wake * 0.9)
+            else if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.9)
                 status = 3;
             break;
         case 3:
@@ -63,8 +80,7 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
                 status = 1;
                 cpm_rate_bcg_wake = cpm_rate_bcg;
             }
-            else if (cpm_rate_bcg < cpm_rate_bcg_wake)
-            //TODO: 开启鼾声检测
+            else if (cpm_rate_bcg > cpm_rate_bcg_wake)
                 status = 2;
             break;
         default:

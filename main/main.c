@@ -31,6 +31,8 @@ int count_breath = 0; // 用于判断呼吸暂停的计数器
 float signal_bcg[1200];
 float signal_breath[1200];
 
+bool state_flag = false;
+
 void app_main(void)
 {
     gptimer_handle_t timer_handle = gptimer_init();
@@ -90,9 +92,11 @@ void app_main(void)
             switch (state)
             {
             case 0:
+                state_flag = true;
                 printf("状态: 离床 \n");
                 break;
             case 1:
+                state_flag = false;
                 printf("状态: 在床 \n");
                 break;
             case 2:
@@ -101,6 +105,7 @@ void app_main(void)
                     flag_cooldown = true;
                     ESP_ERROR_CHECK(gptimer_start(timer2_handle));
                 }
+                state_flag = false;
                 printf("状态: 体动 \n");
                 break;
             }
@@ -232,6 +237,8 @@ void app_main(void)
                         printf("呼吸率: %d \n", now_rate_breath);
                 }
                 free(peak_breath);
+            
+                printf("平均体动：%d， 平均心率：%f， 睡眠状态：%d\n", cpm_bodyMove, cpm_rate_bcg, status);
             }
             // printf("%d \n", count_breath);
             for (int i = 0; i < len - 5; i++)
@@ -246,10 +253,9 @@ void app_main(void)
             led = !led;
             gpio_set_level(GPIO_NUM_45, led);
             printf("\n");
-            printf("平均体动：%d， 平均心率：%f， 睡眠状态：%d\n", cpm_bodyMove, cpm_rate_bcg, status);
             vTaskDelay(1);
         }
-
+    // vTaskDelay(100);
         // if (flag_collect)
         // {
         //     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));

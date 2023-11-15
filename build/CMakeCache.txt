@@ -14,11 +14,8 @@
 # EXTERNAL cache entries
 ########################
 
-//No help, variable specified on the command line.
-CCACHE_ENABLE:UNINITIALIZED=1
-
 //Path to a program.
-CCACHE_FOUND:FILEPATH=C:/Users/z7868/.espressif/tools/ccache/4.8/ccache-4.8-windows-x86_64/ccache.exe
+CMAKE_ADDR2LINE:FILEPATH=D:/application/Espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208/xtensa-esp32s3-elf/bin/xtensa-esp32s3-elf-addr2line.exe
 
 //Path to a program.
 CMAKE_AR:FILEPATH=D:/application/Espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208/xtensa-esp32s3-elf/bin/xtensa-esp32s3-elf-ar.exe
