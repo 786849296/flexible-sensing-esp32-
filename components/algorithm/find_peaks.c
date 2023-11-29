@@ -161,6 +161,7 @@ int* fun_selectbyDistance(float* signal, int* peaks, int peaks_size, int distanc
     }
 
     free(keep);
+    free(priority);
     free(priority_argsort);
 
     *peaks_count = new_peaks_found;

@@ -5,12 +5,11 @@ bool flag_collect = false;
 int count_bodyMove = 0; // 体动的计数器
 int cnt = 0;
 int cpm_bodyMove = 0;   // 每分钟体动的计数
-int count_rate_bcg = 0;
+float count_rate_bcg = 0;
 double cpm_rate_bcg = 0;
 double cpm_rate_bcg_wake = 0;
 //在床：0 清醒：1 浅睡：2 深睡：3
-int status = 0;
-extern bool state_flag;
+int status = 1;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -39,15 +38,15 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
         cnt = 0;
         count_bodyMove = 0;
         count_rate_bcg = 0;
-        status = 0;
+        status = 1;
     }
 
-    if (cnt++ == 100 * 60)
+    if (cnt++ == 100 * 60 * SLEEP_MONITORING_PERIOD)
     {
         cnt = 0;
         cpm_bodyMove = count_bodyMove;
         count_bodyMove = 0;
-        cpm_rate_bcg = count_rate_bcg / 120.0;
+        cpm_rate_bcg = count_rate_bcg / (150.0 * SLEEP_MONITORING_PERIOD);
         count_rate_bcg = 0;
         switch (status)
         {
@@ -58,29 +57,27 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
                 {
                     //TODO: 开启鼾声检测
                     status = 2;
+                    break;
                 }
             }
-            else
-            {
-                cpm_rate_bcg_wake = cpm_rate_bcg;
-            }
+            cpm_rate_bcg_wake = cpm_rate_bcg;
             break;
         case 2:
-            if (cpm_bodyMove >= 3 || cpm_rate_bcg > cpm_rate_bcg_wake * 1.04)
+            if (cpm_bodyMove >= 3 || cpm_rate_bcg > cpm_rate_bcg_wake * 1.02)
             {
                 status = 1;
-                cpm_rate_bcg_wake = cpm_rate_bcg;
+                // cpm_rate_bcg_wake = cpm_rate_bcg;
             }
-            else if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.9)
+            else if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.94)
                 status = 3;
             break;
         case 3:
             if (cpm_bodyMove >= 3)
             {
                 status = 1;
-                cpm_rate_bcg_wake = cpm_rate_bcg;
+                // cpm_rate_bcg_wake = cpm_rate_bcg;
             }
-            else if (cpm_rate_bcg > cpm_rate_bcg_wake * 0.9)
+            else if (cpm_bodyMove >= 1 || cpm_rate_bcg > cpm_rate_bcg_wake * 0.94)
                 status = 2;
             break;
         default:

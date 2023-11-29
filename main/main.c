@@ -23,10 +23,9 @@ const int peak_distance_bcg = 59; // 心率寻峰算法distance参数
 const int peak_distance_breath = 200; // 呼吸率寻峰算法distance参数
 const float peak_height_breath = 1.3; // 呼吸率寻峰算法height参数
 
-int now_rate_bcg = 0; // 当前心率值，用于输出
-int now_rate_breath = 0; // 当心呼吸率值，用于输出
-bool round_one_flag = true; // 判断首次在床的标志
-int count_breath = 0; // 用于判断呼吸暂停的计数器
+static float now_rate_bcg = 0; // 当前心率值，用于输出
+static int now_rate_breath = 12; // 当心呼吸率值，用于输出
+static bool round_one_flag = true; // 判断首次在床的标志
 
 float signal_bcg[1200];
 float signal_breath[1200];
@@ -43,6 +42,7 @@ void app_main(void)
     //uart_init();
     bool led = 0;
     
+    uint16_t cnt_breath = 0; // 用于判断呼吸暂停的计数器
     //等待采集一轮数据，100ms
     //esp_rom_delay_us(100 * 1000);
 
@@ -160,12 +160,13 @@ void app_main(void)
                 free(peak_byheight_bcg);
 
 
-                int *rate_bcg = (int*)malloc(len_bcg * sizeof(int));
+                float *rate_bcg = (float*)malloc(len_bcg * sizeof(float));
                 for (int i = 0; i < len_bcg; i++)
                 {
                     rate_bcg[i] = 180 / (peak_bcg[i] / FILTER_FS);
-                    // printf("rate_bcg: %d ", rate_bcg[i]);
+                    // printf("%d ", peak_bcg[i]);
                 }
+                // printf("%d ", peak_bcg[len_bcg - 1]);
                 // printf("\n");
                 free(peak_bcg);
 
@@ -178,13 +179,13 @@ void app_main(void)
                             round_one_flag = false;
                         }
                     // 判断是否心率发生改变或过度异常
-                    if (now_rate_bcg != rate_bcg[len_bcg - 1] && (abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 15))
+                    // if (now_rate_bcg != rate_bcg[len_bcg - 1] && (abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 30))
                         now_rate_bcg = rate_bcg[len_bcg - 1];
                 }
                 
                 free(rate_bcg);
                 
-                printf("心率: %d \n", now_rate_bcg);
+                printf("心率: %.2f \n", now_rate_bcg);
                 if (now_rate_bcg < 50)
                     printf("心率过慢 \n");
                 else if (now_rate_bcg > 120)
@@ -210,6 +211,7 @@ void app_main(void)
                         rate_breath[i] = 60 / (peak_breath[i] / FILTER_FS);
                         // printf("rate_breath: %d ", rate_breath[i]);
                     }
+                    // printf("%d ", peak_breath[len_breath - 1]);
                     // printf("\n");
 
                     // if (round_one_flag)
@@ -221,26 +223,25 @@ void app_main(void)
                     if (now_rate_breath != rate_breath[len_breath - 1])
                         now_rate_breath = rate_breath[len_breath - 1];
                     printf("呼吸率: %d \n", now_rate_breath);
-                    count_breath = 0;
+                    cnt_breath = 0;
                     free(rate_breath);
                 }
                 else
                 {
                     //添加定时效果
-                    count_breath++;
-                    if (count_breath >= 20) // 单次循环为0.5秒,20次为10秒
+                    cnt_breath++;
+                    if (cnt_breath >= 25) // 单次循环为0.4秒,25次为10秒
                     {
                         now_rate_breath = 0;
-                        printf("呼吸率: %d \n", now_rate_breath);
+                        printf("呼吸率a: %d \n", now_rate_breath);
                     }
                     else // 维持原有数值
-                        printf("呼吸率: %d \n", now_rate_breath);
+                        printf("呼吸率b: %d \n", now_rate_breath);
                 }
                 free(peak_breath);
-            
-                printf("平均体动：%d， 平均心率：%f， 睡眠状态：%d\n", cpm_bodyMove, cpm_rate_bcg, status);
+                printf("cnt_breath: %d \n", cnt_breath);
+                printf("平均体动:%d, 清醒心率:%.2f, 平均心率:%.2f, 睡眠状态:%d\n", cpm_bodyMove, cpm_rate_bcg_wake, cpm_rate_bcg, status);
             }
-            // printf("%d \n", count_breath);
             for (int i = 0; i < len - 5; i++)
                 for (int c = 0; c < 8; c++)
                 {
@@ -253,7 +254,6 @@ void app_main(void)
             led = !led;
             gpio_set_level(GPIO_NUM_45, led);
             printf("\n");
-            vTaskDelay(1);
         }
     // vTaskDelay(100);
         // if (flag_collect)
@@ -271,7 +271,7 @@ void app_main(void)
         //     gpio_set_level(GPIO_NUM_45, led);
             
         // }
-        // vTaskDelay(1);
+        vTaskDelay(1);
         // printf(" ");
         // printf("cd4051bmt_channel: %d\n", cd4051bmt_channel);
         

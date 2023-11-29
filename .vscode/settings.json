@@ -22,6 +22,7 @@
     "string_view": "c",
     "cmath": "c",
     "timer.h": "c",
-    "cd4051bmt.h": "c"
+    "cd4051bmt.h": "c",
+    "mic.h": "c"
   }
 }
