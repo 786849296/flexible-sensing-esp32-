@@ -179,7 +179,7 @@ void app_main(void)
                             round_one_flag = false;
                         }
                     // 判断是否心率发生改变或过度异常
-                    // if (now_rate_bcg != rate_bcg[len_bcg - 1] && (abs(now_rate_bcg - rate_bcg[len_bcg - 1]) < 30))
+                    if (now_rate_bcg - rate_bcg[len_bcg - 1] < 30.0 || rate_bcg[len_bcg - 1] - now_rate_bcg < 30.0)
                         now_rate_bcg = rate_bcg[len_bcg - 1];
                 }
                 
