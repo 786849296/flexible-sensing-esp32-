@@ -5,7 +5,7 @@
 #include "ADC1.h"
 #include "CD4051BMT.h"
 
-#define SLEEP_MONITORING_PERIOD 3 //睡眠状态检测周期 单位(min)
+#define SLEEP_MONITORING_PERIOD 2 //睡眠状态检测周期 单位(min)
 
 extern bool flag_collect;
 extern bool flag_cooldown;

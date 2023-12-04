@@ -23,8 +23,13 @@ const int peak_distance_bcg = 59; // 心率寻峰算法distance参数
 const int peak_distance_breath = 200; // 呼吸率寻峰算法distance参数
 const float peak_height_breath = 1.3; // 呼吸率寻峰算法height参数
 
-static float now_rate_bcg = 0; // 当前心率值，用于输出
-static int now_rate_breath = 12; // 当心呼吸率值，用于输出
+struct Output
+{
+    float now_rate_bcg; // 当前心率值，用于输出
+    int now_rate_breath; // 当前呼吸率值，用于输出
+}output = {0,0};
+// static float now_rate_bcg = 0; // 当前心率值，用于输出
+// static int now_rate_breath = 12; // 当前呼吸率值，用于输出
 static bool round_one_flag = true; // 判断首次在床的标志
 
 float signal_bcg[1200];
@@ -41,7 +46,7 @@ void app_main(void)
     cd4051bmt_init();
     //uart_init();
     bool led = 0;
-    
+
     uint16_t cnt_breath = 0; // 用于判断呼吸暂停的计数器
     //等待采集一轮数据，100ms
     //esp_rom_delay_us(100 * 1000);
@@ -73,7 +78,6 @@ void app_main(void)
         int state = 0;
         if (flag_collect)
         {
-            // printf("len: %d\n", len);
             int len_temp = len;
             // 判断状态
             for (int i = len_temp - 6; i < len_temp - 1; i++)
@@ -109,16 +113,18 @@ void app_main(void)
                 printf("状态: 体动 \n");
                 break;
             }
-            
+
             if (state == 1)
             {
                 float max_bcg = 0, min_bcg = 5;
                 // 双向滤波 分离心冲击信号与呼吸信号
+                float bcg_temp = output.now_rate_bcg;
                 for (int i = len_temp * 8; i > -1; i--)
                 {
                     signal_bcg[i] = bw_band_pass(filter_bd, raw_ele[i]);
                     signal_breath[i] = bw_low_pass(filter_low, raw_ele[i]);
                 }
+                output.now_rate_bcg = bcg_temp;
                 for (int i = 0; i < len_temp * 8; i++)
                 {
                     signal_bcg[i] = bw_band_pass(filter_bd, raw_ele[i]);
@@ -166,32 +172,37 @@ void app_main(void)
                     rate_bcg[i] = 180 / (peak_bcg[i] / FILTER_FS);
                     // printf("%d ", peak_bcg[i]);
                 }
-                // printf("%d ", peak_bcg[len_bcg - 1]);
-                // printf("\n");
+                printf("peak_bcg:%d ", peak_bcg[len_bcg - 1]);
+                printf("\n");
                 free(peak_bcg);
+
+                // printf("now:%f,%d\n", output.now_rate_bcg,output.now_rate_breath);
 
                 if (len_bcg > 0)
                 {
                     // 判断是否为首次在床
                     if (round_one_flag)
                         {
-                            now_rate_bcg = rate_bcg[len_bcg - 1];
+                            output.now_rate_bcg = rate_bcg[len_bcg - 1];
                             round_one_flag = false;
                         }
                     // 判断是否心率发生改变或过度异常
-                    if (now_rate_bcg - rate_bcg[len_bcg - 1] < 30.0 || rate_bcg[len_bcg - 1] - now_rate_bcg < 30.0)
-                        now_rate_bcg = rate_bcg[len_bcg - 1];
+                    if (output.now_rate_bcg - rate_bcg[len_bcg - 1] < 30.0 || rate_bcg[len_bcg - 1] - output.now_rate_bcg < 30.0)
+                        {
+                            // printf("ratebcg:%.2f", rate_bcg[len_bcg - 1]);
+                            output.now_rate_bcg = rate_bcg[len_bcg - 1];
+                        }
                 }
                 
                 free(rate_bcg);
                 
-                printf("心率: %.2f \n", now_rate_bcg);
-                if (now_rate_bcg < 50)
+                printf("心率: %.2f \n", output.now_rate_bcg);
+                if (output.now_rate_bcg < 50)
                     printf("心率过慢 \n");
-                else if (now_rate_bcg > 120)
+                else if (output.now_rate_bcg > 120)
                     printf("心率过快 \n");
                 
-                count_rate_bcg += now_rate_bcg;
+                count_rate_bcg += output.now_rate_bcg;
 
                 // 呼吸率计算
                 int peak_count_breath = 0;
@@ -219,10 +230,10 @@ void app_main(void)
 
                     // printf("%d\n", now_rate_breath);
                     // printf("%d\n", rate_breath[len_breath - 1]);
-
-                    if (now_rate_breath != rate_breath[len_breath - 1])
-                        now_rate_breath = rate_breath[len_breath - 1];
-                    printf("呼吸率: %d \n", now_rate_breath);
+                    free(peak_breath);
+                    if (output.now_rate_breath != rate_breath[len_breath - 1])
+                        output.now_rate_breath = rate_breath[len_breath - 1];
+                    printf("呼吸率: %d \n", output.now_rate_breath);
                     cnt_breath = 0;
                     free(rate_breath);
                 }
@@ -232,13 +243,13 @@ void app_main(void)
                     cnt_breath++;
                     if (cnt_breath >= 25) // 单次循环为0.4秒,25次为10秒
                     {
-                        now_rate_breath = 0;
-                        printf("呼吸率a: %d \n", now_rate_breath);
+                        output.now_rate_breath = 0;
+                        printf("呼吸率a: %d \n", output.now_rate_breath);
                     }
                     else // 维持原有数值
-                        printf("呼吸率b: %d \n", now_rate_breath);
+                        printf("呼吸率b: %d \n", output.now_rate_breath);
                 }
-                free(peak_breath);
+                // free(peak_breath);
                 printf("cnt_breath: %d \n", cnt_breath);
                 printf("平均体动:%d, 清醒心率:%.2f, 平均心率:%.2f, 睡眠状态:%d\n", cpm_bodyMove, cpm_rate_bcg_wake, cpm_rate_bcg, status);
             }

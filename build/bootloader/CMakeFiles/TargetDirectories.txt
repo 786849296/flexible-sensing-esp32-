@@ -4,6 +4,8 @@ D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/save-defconfig.di
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/gen_project_binary.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/app.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/erase_flash.dir
+D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/uf2.dir
+D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/uf2-app.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/monitor.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/_project_elf_src.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/bootloader.elf.dir
@@ -13,8 +15,6 @@ D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/size-components.d
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/dfu.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/dfu-list.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/dfu-flash.dir
-D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/uf2-app.dir
-D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/uf2.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/edit_cache.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/CMakeFiles/rebuild_cache.dir
 D:/Desktop/flexible-sensing-esp32-/build/bootloader/esp-idf/CMakeFiles/edit_cache.dir
