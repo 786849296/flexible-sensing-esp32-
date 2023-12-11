@@ -10,6 +10,7 @@ double cpm_rate_bcg = 0;
 double cpm_rate_bcg_wake = 0;
 //在床：0 清醒：1 浅睡：2 深睡：3
 int status = 1;
+uint8_t channel = 0;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -18,74 +19,79 @@ adc_continuous_handle_t adc_handle;
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
     bool adc_flag;
-    uint8_t channel = cd4051bmt_channel;
     adc_flag = adc1_read(adc_handle);
     if (adc_flag)
-        get_voltage(cali_handle, channel);
+        get_voltage(cali_handle, len % 8);
     cd4051bmt_channel = (cd4051bmt_channel + 1) % 8;
-    cd4051bmt_channel_set(cd4051bmt_channel);
     if (!cd4051bmt_channel)
     {
         len++;
-        if (len >= 150)
+        if (!(len % 8))
+            for (int i = 0; i < 8; i++)
+                raw_res[len / 8][i] = raw_res[len / 8 - 1][i];
+        cd4051bmt_channel_set(len % 8);
+        // if (len >= 150)
             flag_collect = true;
-        if (len == 170)
-            len = 0;
-    }
-    
-    if (state_flag)
-    {
-        cnt = 0;
-        count_bodyMove = 0;
-        count_rate_bcg = 0;
-        status = 1;
-    }
-
-    if (cnt++ == 100 * 60 * SLEEP_MONITORING_PERIOD)
-    {
-        cnt = 0;
-        cpm_bodyMove = count_bodyMove;
-        count_bodyMove = 0;
-        cpm_rate_bcg = (cpm_rate_bcg + count_rate_bcg / (150.0 * SLEEP_MONITORING_PERIOD)) / 2;
-        count_rate_bcg = 0;
-        switch (status)
+        if (len == 169)
         {
-        case 1:
-            if (cpm_bodyMove < 3)
-            {
-                if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.98)
-                {
-                    //TODO: 开启鼾声检测
-                    status = 2;
-                    break;
-                }
-            }
-            cpm_rate_bcg_wake = cpm_rate_bcg;
-            break;
-        case 2:
-            if (cpm_bodyMove >= 3 || cpm_rate_bcg > cpm_rate_bcg_wake * 1.02)
-            {
-                status = 1;
-                // cpm_rate_bcg_wake = cpm_rate_bcg;
-            }
-            else if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.94)
-                status = 3;
-            break;
-        case 3:
-            if (cpm_bodyMove >= 3)
-            {
-                status = 1;
-                // cpm_rate_bcg_wake = cpm_rate_bcg;
-            }
-            else if (cpm_bodyMove >= 1 || cpm_rate_bcg > cpm_rate_bcg_wake * 0.94)
-                status = 2;
-            break;
-        default:
-            status = 1;
-            cpm_rate_bcg_wake = cpm_rate_bcg;
-            break;
+            len = 0;
+            flag_collect = false;
         }
     }
+    
+    // if (state_flag)
+    // {
+    //     cnt = 0;
+    //     count_bodyMove = 0;
+    //     count_rate_bcg = 0;
+    //     status = 1;
+    // }
+
+    // if (cnt++ == 100 * 60 * SLEEP_MONITORING_PERIOD)
+    // {
+    //     cnt = 0;
+    //     cpm_bodyMove = count_bodyMove;
+    //     count_bodyMove = 0;
+    //     cpm_rate_bcg = (cpm_rate_bcg + count_rate_bcg / (150.0 * SLEEP_MONITORING_PERIOD)) / 2;
+    //     count_rate_bcg = 0;
+    //     switch (status)
+    //     {
+    //     case 1:
+    //         if (cpm_bodyMove < 3)
+    //         {
+    //             if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.98)
+    //             {
+    //                 //TODO: 开启鼾声检测
+    //                 status = 2;
+    //                 break;
+    //             }
+    //         }
+    //         cpm_rate_bcg_wake = cpm_rate_bcg;
+    //         break;
+    //     case 2:
+    //         if (cpm_bodyMove >= 3 || cpm_rate_bcg > cpm_rate_bcg_wake * 1.02)
+    //         {
+    //             status = 1;
+    //             // cpm_rate_bcg_wake = cpm_rate_bcg;
+    //         }
+    //         else if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.94)
+    //             status = 3;
+    //         break;
+    //     case 3:
+    //         if (cpm_bodyMove >= 3)
+    //         {
+    //             status = 1;
+    //             // cpm_rate_bcg_wake = cpm_rate_bcg;
+    //         }
+    //         else if (cpm_bodyMove >= 1 || cpm_rate_bcg > cpm_rate_bcg_wake * 0.94)
+    //             status = 2;
+    //         break;
+    //     default:
+    //         status = 1;
+    //         cpm_rate_bcg_wake = cpm_rate_bcg;
+    //         break;
+    //     }
+    // }
     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
     //cd4051bmt_channel_temp = cd4051bmt_channel;
     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
