@@ -9,6 +9,7 @@
 
 extern bool flag_collect;
 extern bool flag_cooldown;
+extern bool flag_snoring;
 extern int cpm_bodyMove;
 extern float count_rate_bcg;
 extern double cpm_rate_bcg;

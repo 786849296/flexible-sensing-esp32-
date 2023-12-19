@@ -763,3 +763,10 @@ D:/Desktop/flexible-sensing-esp32-/build/esp-idf/algorithm/CMakeFiles/list_insta
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/algorithm/CMakeFiles/install.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/algorithm/CMakeFiles/install/local.dir
 D:/Desktop/flexible-sensing-esp32-/build/esp-idf/algorithm/CMakeFiles/install/strip.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/__idf_tem_hum_i2c.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/edit_cache.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/rebuild_cache.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/list_install_components.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/install.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/install/local.dir
+D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/CMakeFiles/install/strip.dir

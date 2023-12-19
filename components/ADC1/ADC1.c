@@ -1,8 +1,10 @@
 #include "ADC1.h"
+#include <string.h>
 
 float raw_ele[1500];
-int raw_res[160][6];
+int raw_res[160][8];
 int len = 0;
+extern uint8_t cd4051bmt_channel;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -37,6 +39,7 @@ adc_continuous_handle_t adc1_init()
     }
     dig_cfg.adc_pattern = adc_pattern;
     ESP_ERROR_CHECK(adc_continuous_config(handle, &dig_cfg));
+    memset(raw_ele, 0, sizeof(float) * 1500);
     return handle;
 }
 
@@ -45,7 +48,7 @@ bool adc1_read(adc_continuous_handle_t handle)
     char unit[] = ADC_UNIT_STR(ADC_UNIT_1);
     esp_err_t ret;
     uint32_t ret_num = 0;
-    ret = adc_continuous_read(handle, result, READ_LEN, &ret_num, 2);
+    ret = adc_continuous_read(handle, result, READ_LEN, &ret_num, 1);
     bool flag_result = false;
     if (ret == ESP_OK)
         // ESP_LOGI("ADC", "ret is %x, ret_num is %"PRIu32" bytes", ret, ret_num);
@@ -64,13 +67,13 @@ void get_voltage(adc_cali_handle_t handle, uint8_t channel)
         adc_digi_output_data_t *p = (adc_digi_output_data_t*)&result[i];
         uint32_t chan_num = ADC_GET_CHANNEL(p);
         data = ADC_GET_DATA(p);
-        if (chan_num == 4 && channel < 6)
-            raw_res[len][channel] = data;
+        if (chan_num == 4 && (len % 8) < 6)
+            raw_res[len / 8][len % 8] = data;
         else if(chan_num == 3)
         {
             int temp;
             ESP_ERROR_CHECK(adc_cali_raw_to_voltage(handle, data, &temp));
-            raw_ele[len * 8 + channel] = temp / 1000.0;
+            raw_ele[len * 8 + cd4051bmt_channel] = temp / 1000.0;
         }
         //ESP_LOGI("cail", "ADC%d Channel[%"PRIu32"] Cali Voltage: %"PRIu32" mV", ADC_UNIT_1 + 1, chan_num, v.voltage[i / SOC_ADC_DIGI_RESULT_BYTES]);
     }

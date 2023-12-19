@@ -13,7 +13,7 @@
 #include "esp_log.h"
 
 extern float raw_ele[1500];
-extern int raw_res[160][6];
+extern int raw_res[160][8];
 extern int len;
 
 adc_cali_handle_t adc_cali_init();

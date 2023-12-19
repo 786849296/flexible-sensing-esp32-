@@ -1,7 +1,6 @@
 #include "CD4051BMT.h"
 
 uint8_t cd4051bmt_channel = 0;
-static char *TAG = "CD4051BMT";
 
 void cd4051bmt_init()
 {

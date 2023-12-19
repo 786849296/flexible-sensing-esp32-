@@ -507,3 +507,8 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   include("D:/Desktop/flexible-sensing-esp32-/build/esp-idf/algorithm/cmake_install.cmake")
 endif()
 
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
+  include("D:/Desktop/flexible-sensing-esp32-/build/esp-idf/tem_hum_i2c/cmake_install.cmake")
+endif()
+

@@ -1,13 +1,13 @@
 #include <stdio.h>
 #include "MIC.h"
-// #include <stdbool.h>
+
 void calibration_baseline(float* wave_data, int frame_size) {
     float sum = 0, average_data = 0;
     for (int i = 0; i < frame_size; i++)
         sum += wave_data[i];
     average_data = sum / frame_size;
     for (int j = 0; j < frame_size; j++)
-        wave_data[j] -= average_data;
+        wave_data[j] = (wave_data[j] - average_data) / 1000;
 }
 
 int sgn(float data) {
@@ -31,10 +31,12 @@ float cal_short_time_energy(float* wave_data, int frame_size) {
     return sum;
 }
 
-
-_Bool is_probable_snoring(float zeroCrossingRate, float shortTimeEnergy) {
-    if (zeroCrossingRate < 40 && shortTimeEnergy > 0.2)
-        return 1;
+bool is_probable_snoring(float* wave_data, int frame_size) {
+    calibration_baseline(wave_data, frame_size);
+    float shortTimeEnergy = cal_short_time_energy(wave_data, frame_size);
+    float zeroCrossingRate = cal_zero_crossing_rate(wave_data, frame_size);
+    if (zeroCrossingRate < 10 && shortTimeEnergy > 5)
+        return true;
     else
-        return 0;
+        return false;
 }

@@ -79,3 +79,4 @@ $<TARGET_FILE:__idf_MIC>
 $<TARGET_FILE:__idf_TIMER>
 $<TARGET_FILE:__idf_UART>
 $<TARGET_FILE:__idf_algorithm>
+$<TARGET_FILE:__idf_tem_hum_i2c>

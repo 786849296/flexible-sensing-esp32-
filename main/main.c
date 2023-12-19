@@ -5,8 +5,10 @@
 #include "CD4051BMT.h"
 #include "ADC1.h"
 #include "TIMER.h"
+#include "MIC.h"
 #include "algorithm.h"
 #include "find_peaks.h"
+#include "tem_hum_i2c.h"
 // #include "UART.h"
 // #include "soc/clk_tree_defs.h"
 // #include "esp_clk_tree.h"
@@ -19,9 +21,9 @@
 #include "esp_app_trace.h"
 #endif
 
-const int peak_distance_bcg = 59; // 心率寻峰算法distance参数
+const int peak_distance_bcg = 50; // 心率寻峰算法distance参数
 const int peak_distance_breath = 200; // 呼吸率寻峰算法distance参数
-const float peak_height_breath = 1.3; // 呼吸率寻峰算法height参数
+const float peak_height_breath = 1.2; // 呼吸率寻峰算法height参数
 
 struct Output
 {
@@ -41,13 +43,17 @@ void app_main(void)
 {
     gptimer_handle_t timer_handle = gptimer_init();
     gptimer_handle_t timer2_handle = gptimer2_init();
+    i2c_master_init_1();
+    AHT20_Start_Init();
     ESP_ERROR_CHECK(gptimer_start(timer_handle));
 
     cd4051bmt_init();
+    cd4051bmt_channel_set(0);
     //uart_init();
     bool led = 0;
 
-    uint16_t cnt_breath = 0; // 用于判断呼吸暂停的计数器
+    int cnt_breath = 0; // 用于判断呼吸暂停的计数器
+    int cnt_snoring = 0; // 鼾声判断计数器
     //等待采集一轮数据，100ms
     //esp_rom_delay_us(100 * 1000);
 
@@ -55,6 +61,9 @@ void app_main(void)
     BWLowPass* filter_low = create_bw_low_pass_filter(FILTER_N, FILTER_FS, FILTER_LOW_WC);
     while(!flag_collect)
         vTaskDelay(1);
+    volatile float hum = 0, temp = 0;
+    uint32_t CT_data[9] = {0};
+    // vTaskDelay(80 / portTICK_PERIOD_MS);
 
     while(1)
     {
@@ -78,9 +87,21 @@ void app_main(void)
         int state = 0;
         if (flag_collect)
         {
+            // printf("len: %d\n", len);
             int len_temp = len;
             // 判断状态
-            for (int i = len_temp - 6; i < len_temp - 1; i++)
+            for (int i = len_temp / 8 - 1; i < len_temp / 8; i++)
+            {
+                // for(int j = 0; j < 6; j++)
+                // {
+                //     printf("%d ", raw_res[i][j]);
+                // }
+                // printf("\n");
+                // for(int j = 0; j < 6; j++)
+                // {
+                //     printf("%d ", raw_res[i + 1][j]);
+                // }
+                // printf("\n");
                 if (is_bodyMove(raw_res[i], raw_res[i + 1], 6))
                 {
                     state = 2;
@@ -88,7 +109,11 @@ void app_main(void)
                     break;
                 }
                 else if (state != 1 && is_onBed(raw_res[i], 6))
+                {
                     state = 1;
+                    break;
+                }
+            }
             if (state == 0 && round_one_flag == false)
                 round_one_flag = true;
             
@@ -113,18 +138,16 @@ void app_main(void)
                 printf("状态: 体动 \n");
                 break;
             }
-
+            
             if (state == 1)
             {
                 float max_bcg = 0, min_bcg = 5;
                 // 双向滤波 分离心冲击信号与呼吸信号
-                float bcg_temp = output.now_rate_bcg;
-                for (int i = len_temp * 8; i > -1; i--)
+                for (int i = len_temp * 8 - 1; i > -1; i--)
                 {
                     signal_bcg[i] = bw_band_pass(filter_bd, raw_ele[i]);
                     signal_breath[i] = bw_low_pass(filter_low, raw_ele[i]);
                 }
-                output.now_rate_bcg = bcg_temp;
                 for (int i = 0; i < len_temp * 8; i++)
                 {
                     signal_bcg[i] = bw_band_pass(filter_bd, raw_ele[i]);
@@ -153,7 +176,6 @@ void app_main(void)
                     signal_bcg[x] = k * (signal_bcg[x] - max_bcg) + a;
                     signal_bcg[x] = exp(signal_bcg[x]) - 1;
                 }
-                
                 // 心率计算
                 int peak_count_bcg = 0;
                 int* peak_all_bcg = fun_findAllPeaks(signal_bcg, len_bcg, &peak_count_bcg);
@@ -161,7 +183,11 @@ void app_main(void)
                 int* peak_bcg = fun_selectbyDistance(signal_bcg, peak_byheight_bcg, peak_count_bcg, peak_distance_bcg, &peak_count_bcg);
                 len_bcg = peak_diff(peak_bcg, peak_count_bcg);
                 len_bcg = peak3_zip(peak_bcg, len_bcg);
-
+                // for (int i = 0; i < len_bcg; i++)
+                // {
+                //     printf("%d ", peak_bcg[i]);
+                // }
+                // printf("\n");
                 free(peak_all_bcg);
                 free(peak_byheight_bcg);
 
@@ -170,28 +196,23 @@ void app_main(void)
                 for (int i = 0; i < len_bcg; i++)
                 {
                     rate_bcg[i] = 180 / (peak_bcg[i] / FILTER_FS);
-                    // printf("%d ", peak_bcg[i]);
+                    printf("%d ", peak_bcg[i]);
                 }
-                printf("peak_bcg:%d ", peak_bcg[len_bcg - 1]);
+                // printf("%d ", peak_bcg[len_bcg - 1]);
                 printf("\n");
                 free(peak_bcg);
 
-                // printf("now:%f,%d\n", output.now_rate_bcg,output.now_rate_breath);
-
-                if (len_bcg > 0)
+                if (len_bcg > 1)
                 {
                     // 判断是否为首次在床
                     if (round_one_flag)
                         {
-                            output.now_rate_bcg = rate_bcg[len_bcg - 1];
+                            output.now_rate_bcg = rate_bcg[len_bcg - 2];
                             round_one_flag = false;
                         }
                     // 判断是否心率发生改变或过度异常
-                    if (output.now_rate_bcg - rate_bcg[len_bcg - 1] < 30.0 || rate_bcg[len_bcg - 1] - output.now_rate_bcg < 30.0)
-                        {
-                            // printf("ratebcg:%.2f", rate_bcg[len_bcg - 1]);
-                            output.now_rate_bcg = rate_bcg[len_bcg - 1];
-                        }
+                    else if (output.now_rate_bcg - rate_bcg[len_bcg - 2] < 30.0 || rate_bcg[len_bcg - 2] - output.now_rate_bcg < 30.0)
+                        output.now_rate_bcg = rate_bcg[len_bcg - 2];
                 }
                 
                 free(rate_bcg);
@@ -230,7 +251,7 @@ void app_main(void)
 
                     // printf("%d\n", now_rate_breath);
                     // printf("%d\n", rate_breath[len_breath - 1]);
-                    free(peak_breath);
+
                     if (output.now_rate_breath != rate_breath[len_breath - 1])
                         output.now_rate_breath = rate_breath[len_breath - 1];
                     printf("呼吸率: %d \n", output.now_rate_breath);
@@ -249,18 +270,35 @@ void app_main(void)
                     else // 维持原有数值
                         printf("呼吸率b: %d \n", output.now_rate_breath);
                 }
-                // free(peak_breath);
-                printf("cnt_breath: %d \n", cnt_breath);
+                free(peak_breath);
+                // printf("cnt_breath: %d \n", cnt_breath);
                 printf("平均体动:%d, 清醒心率:%.2f, 平均心率:%.2f, 睡眠状态:%d\n", cpm_bodyMove, cpm_rate_bcg_wake, cpm_rate_bcg, status);
+                if (flag_snoring)
+                {
+                    // 确定帧长
+                    // bool probable_snoring = is_probable_snoring();
+                    // if (probable_snoring)
+                    // {
+                    //     cnt_snoring++;
+                    // }
+                    // else
+                    // {
+                    //     cnt_snoring = 0;
+                    // }
+                    // if (cnt_snoring == 15)
+                    // {
+                    //     // 一次有效鼾声 确定存储或上传方式
+                    // }
+                }
             }
-            for (int i = 0; i < len - 5; i++)
+            for (int i = 0; i < len - 8 * 2; i++)
                 for (int c = 0; c < 8; c++)
                 {
-                    raw_ele[i * 8 + c] = raw_ele[(i + 5) * 8 + c];
+                    raw_ele[i * 8 + c] = raw_ele[(i + 8 * 2) * 8 + c];
                     if (c < 6)
-                        raw_res[i][c] = raw_res[i + 5][c];
+                        raw_res[i / 8][c] = raw_res[i / 8 + 2][c];
                 }
-            len -= 5;
+            len -= 8 * 2;
             flag_collect = false;
             led = !led;
             gpio_set_level(GPIO_NUM_45, led);
@@ -272,15 +310,18 @@ void app_main(void)
         //     //ESP_ERROR_CHECK(gptimer_stop(timer_handle));
         //     for (int i = 0; i < 16; i++)
         //         if (i < 6)
-        //             printf("%d ", raw_res[len - 1][i]);
+        //             printf("%d ", raw_res[len / 8][i]);
         //         else if (i > 7)
         //             printf("%f ", raw_ele[(len - 2) * 8 + i]);
+        //     // AHT20_Read_CTdata(CT_data);
+        //     // hum = CT_data[2];  // 计算得到湿度值（放大了10倍）
+        //     // temp = CT_data[3]; // 计算得到温度值（放大了10倍）
+        //     //printf("温度= %f\r\n湿度= %f\r\n ", temp/10, hum/10);
         //     printf("\n");
         //     flag_collect = false;
         //     //ESP_ERROR_CHECK(gptimer_start(timer_handle));
         //     led = !led;
         //     gpio_set_level(GPIO_NUM_45, led);
-            
         // }
         vTaskDelay(1);
         // printf(" ");

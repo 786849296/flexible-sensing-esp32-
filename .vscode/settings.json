@@ -5,7 +5,7 @@
     "board/esp32s3-builtin.cfg"
   ],
   "idf.portWin": "COM5",
-  "idf.flashType": "JTAG",
+  "idf.flashType": "UART",
   "files.associations": {
     "gpio.h": "c",
     "clk_tree_defs.h": "c",
@@ -23,6 +23,8 @@
     "cmath": "c",
     "timer.h": "c",
     "cd4051bmt.h": "c",
-    "mic.h": "c"
+    "mic.h": "c",
+    "*.inc": "c",
+    "algorithm.h": "c"
   }
 }

@@ -2,6 +2,7 @@
 
 adc_cali_handle_t cali_handle;
 bool flag_collect = false;
+bool flag_snoring = false;
 int count_bodyMove = 0; // 体动的计数器
 int cnt = 0;
 int cpm_bodyMove = 0;   // 每分钟体动的计数
@@ -10,6 +11,7 @@ double cpm_rate_bcg = 0;
 double cpm_rate_bcg_wake = 0;
 //在床：0 清醒：1 浅睡：2 深睡：3
 int status = 1;
+uint8_t channel = 0;
 
 #ifdef ADC_MODE_CONTINUOUS
 
@@ -18,19 +20,24 @@ adc_continuous_handle_t adc_handle;
 static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, const gptimer_alarm_event_data_t *edata, void *user_data)
 {
     bool adc_flag;
-    uint8_t channel = cd4051bmt_channel;
     adc_flag = adc1_read(adc_handle);
     if (adc_flag)
-        get_voltage(cali_handle, channel);
+        get_voltage(cali_handle, len % 8);
     cd4051bmt_channel = (cd4051bmt_channel + 1) % 8;
-    cd4051bmt_channel_set(cd4051bmt_channel);
     if (!cd4051bmt_channel)
     {
         len++;
-        if (len >= 150)
+        if (!(len % 8))
+            for (int i = 0; i < 8; i++)
+                raw_res[len / 8][i] = raw_res[len / 8 - 1][i];
+        cd4051bmt_channel_set(len % 8);
+        if (len >= 143)
             flag_collect = true;
-        if (len == 170)
+        if (len >= 185)
+        {
             len = 0;
+            flag_collect = false;
+        }
     }
     
     if (state_flag)
@@ -55,8 +62,8 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
             {
                 if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.98)
                 {
-                    //TODO: 开启鼾声检测
                     status = 2;
+                    flag_snoring = true;
                     break;
                 }
             }
@@ -66,15 +73,19 @@ static bool timer_on_alarm_cb_cd4051bmt_channel_change(gptimer_handle_t handle, 
             if (cpm_bodyMove >= 3 || cpm_rate_bcg > cpm_rate_bcg_wake * 1.02)
             {
                 status = 1;
+                flag_snoring = false;
                 // cpm_rate_bcg_wake = cpm_rate_bcg;
             }
             else if (cpm_rate_bcg < cpm_rate_bcg_wake * 0.94)
+            {
                 status = 3;
+            }
             break;
         case 3:
             if (cpm_bodyMove >= 3)
             {
                 status = 1;
+                flag_snoring = false;
                 // cpm_rate_bcg_wake = cpm_rate_bcg;
             }
             else if (cpm_bodyMove >= 1 || cpm_rate_bcg > cpm_rate_bcg_wake * 0.94)

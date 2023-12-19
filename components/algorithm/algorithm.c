@@ -54,7 +54,7 @@ inline int peak3_zip(int data[], int len)
 bool is_onBed(int data[], int len)
 {
 	for (int i = 0; i < len; i++)
-		if (data[i] > 100)
+		if (data[i] > 1000)
 			return true;
 	return false;
 }
@@ -63,7 +63,7 @@ bool is_onBed(int data[], int len)
 bool is_bodyMove(int data1[], int data2[], int len)
 {
 	for (int i = 0; i < len; i++)
-		if (abs(data1[i] - data2[i]) > 250)
+		if (abs(data1[i] - data2[i]) > 500)
 			return true;
 	return false;
 }
